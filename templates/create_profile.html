@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Criar Perfil - meu youtube</title>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #000;
+        }
+        .profile-card {
+            width: 100%;
+            max-width: 400px;
+            background: #050505;
+            border: 1px solid var(--yt-border);
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .profile-card h1 {
+            font-size: 24px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            color: #fff;
+        }
+        .profile-card h1 span {
+            color: var(--yt-accent);
+        }
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--yt-text-secondary);
+            margin-bottom: 8px;
+        }
+        .form-group input {
+            width: 100%;
+            background: #111;
+            border: 1px solid var(--yt-border);
+            padding: 12px 15px;
+            color: #fff;
+            font-family: var(--font-main);
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus {
+            border-color: var(--yt-accent);
+        }
+        .create-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--yt-accent);
+            border: none;
+            color: #000;
+            font-family: var(--font-main);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        .create-btn:hover {
+            background-color: #d8f165;
+            transform: translateY(-2px);
+        }
+        .footer-note {
+            margin-top: 25px;
+            font-size: 11px;
+            color: var(--yt-text-secondary);
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body class="oled-theme">
+    <div class="profile-card">
+        <h1>CRIAR <span>PERFIL</span></h1>
+        <form action="/save-profile" method="POST">
+            <div class="form-group">
+                <label for="name">Seu Nome</label>
+                <input type="text" id="name" name="name" placeholder="Ex: Papo de Nerd" required autofocus>
+            </div>
+            <div class="form-group">
+                <label for="age">Sua Idade</label>
+                <input type="number" id="age" name="age" placeholder="Ex: 25" min="1" max="150" required>
+            </div>
+            <button type="submit" class="create-btn">INICIAR EXPERIÊNCIA</button>
+        </form>
+        <p class="footer-note">
+            A classificação (Adulto/Adolescente/Criança) será aplicada automaticamente para filtrar o feed.
+        </p>
+    </div>
+</body>
+</html>

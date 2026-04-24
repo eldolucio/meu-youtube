@@ -1,0 +1,23 @@
+{% for v in videos %}
+<article class="item" data-id="{{ v.link }}">
+    <div class="thumb" onclick="openPlayer({{ v.video_id | tojson }}, {{ v.title | tojson }}, {{ v.channel | tojson }}, {{ v.thumbnail | tojson }}, {{ v.link | tojson }})">
+        <img src="{{ v.thumbnail }}" alt="thumbnail" loading="lazy">
+    </div>
+    <div class="meta">
+        <h2 class="title">
+            <a onclick="openPlayer({{ v.video_id | tojson }}, {{ v.title | tojson }}, {{ v.channel | tojson }}, {{ v.thumbnail | tojson }}, {{ v.link | tojson }})">{{ v.title }}</a>
+        </h2>
+        <div class="meta-row">
+            <p class="channel">{{ v.channel }}</p>
+            <div class="item-actions">
+                <button class="lib-btn" onclick="toggleLibrary({{ v.link | tojson }}, {{ v.title | tojson }}, {{ v.channel | tojson }}, {{ v.thumbnail | tojson }})">
+                    <i class="far fa-heart"></i>
+                </button>
+            </div>
+        </div>
+        <time datetime="{{ v.published_str }}">{{ v.published_str }}</time>
+    </div>
+</article>
+{% else %}
+<p style="text-align:center; margin-top:50px; opacity:0.5;">Nenhum vídeo encontrado ou lista vazia.</p>
+{% endfor %}

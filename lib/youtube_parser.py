@@ -10,6 +10,7 @@ from urllib.parse import urlparse, parse_qs
 
 # Simple in‑memory cache (TTL 10 min)
 _cache = {"data": None, "ts": 0}
+_channel_cache = {"data": None, "ts": 0}
 
 
 def parse_subscriptions():
@@ -49,7 +50,6 @@ def parse_subscriptions():
                 reader = csv.DictReader(csvfile)
                 for row in reader:
                     # Support for multiple languages and cases
-                    # English: "Channel Id", Portuguese: "ID do canal", Spanish: "ID del canal", etc.
                     channel_id = (
                         row.get('Channel Id') or 
                         row.get('Channel ID') or 
@@ -85,7 +85,6 @@ def extract_video_id(url):
             if parsed_url.path.startswith('/v/'):
                 return parsed_url.path.split('/')[2]
             if parsed_url.path.startswith('/shorts/'):
-                # Handle /shorts/VIDEO_ID format
                 parts = parsed_url.path.split('/')
                 if len(parts) >= 3:
                     return parts[2]
@@ -125,7 +124,6 @@ def get_cached_videos(ttl=600):
 
     video_list = []
 
-    # Use a small pool to avoid overloading small environments
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
         feeds = list(executor.map(fetch_feed, urls))
 
@@ -160,7 +158,6 @@ def get_cached_videos(ttl=600):
                 "published_str": published_str
             })
 
-    # Sort by date (descending)
     video_list.sort(key=lambda x: x["published_ts"], reverse=True)
     
     _cache["data"] = video_list
@@ -168,7 +165,42 @@ def get_cached_videos(ttl=600):
     return video_list
 
 
+def get_channel_metadata(ttl=3600):
+    """Fetch metadata (name, icon, id) for all subscribed channels."""
+    now = time.time()
+    if _channel_cache["data"] is not None and (now - _channel_cache["ts"] < ttl):
+        return _channel_cache["data"]
+
+    urls = parse_subscriptions()
+    if not urls:
+        return []
+
+    channels = []
+    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+        feeds = list(executor.map(fetch_feed, urls))
+
+    for feed in filter(None, feeds):
+        channel_name = feed.feed.get('title', 'Canal Desconhecido')
+        # YouTube RSS usually provides the channel icon here
+        icon = feed.feed.get('image', {}).get('href', 'https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png')
+        
+        channels.append({
+            "name": channel_name,
+            "icon": icon,
+            "id": feed.feed.get('yt_channelid', '')
+        })
+
+    # Sort channels by name alphabetically
+    channels.sort(key=lambda x: x["name"].lower())
+    
+    _channel_cache["data"] = channels
+    _channel_cache["ts"] = now
+    return channels
+
+
 def clear_cache():
-    """Manually clear the video cache."""
+    """Manually clear the video and channel cache."""
     _cache["data"] = None
     _cache["ts"] = 0
+    _channel_cache["data"] = None
+    _channel_cache["ts"] = 0
