@@ -50,6 +50,13 @@ Conecte este repositório e clique em Deploy. O sistema já está configurado pa
 1. Instale: `pip install -r requirements.txt`
 2. Execute: `python app.py` (Porta padrão: `5005`)
 
+**Rodando via Docker (Recomendado)**:
+Se você tem o Docker instalado, pode subir o dashboard com um único comando:
+```bash
+docker-compose up -d --build
+```
+Isso criará o container e manterá seus perfis salvos permanentemente.
+
 ---
 
 **Tecnologias**: Python (Flask/Antigravity), SQLite (Perfis), AJAX/Fetch (SPA), CSS Modular Industrial.
