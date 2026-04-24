@@ -1,84 +1,136 @@
-import sqlite3
 import os
+import sqlite3
 
+# Try to import psycopg2 for Postgres (Vercel)
+try:
+    import psycopg2
+    from psycopg2.extras import RealDictCursor
+    HAS_POSTGRES = True
+except ImportError:
+    HAS_POSTGRES = False
+
+IS_VERCEL = os.environ.get("VERCEL") == "1"
 DB_PATH = "profiles.db"
 
+def get_connection():
+    if IS_VERCEL:
+        # Connect to Vercel Postgres using the environment variable
+        POSTGRES_URL = os.environ.get("POSTGRES_URL")
+        # Use simple URL connection for psycopg2
+        return psycopg2.connect(POSTGRES_URL)
+    else:
+        # Local SQLite
+        return sqlite3.connect(DB_PATH)
+
 def init_db():
-    conn = sqlite3.connect(DB_PATH)
+    conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS profiles (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            age INTEGER NOT NULL,
-            category TEXT NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
+    if IS_VERCEL:
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS profiles (
+                id SERIAL PRIMARY KEY,
+                name TEXT NOT NULL,
+                age INTEGER NOT NULL,
+                category TEXT NOT NULL
+            )
+        """)
+    else:
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS profiles (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                age INTEGER NOT NULL,
+                category TEXT NOT NULL
+            )
+        """)
     conn.commit()
     conn.close()
 
 def get_category(age):
-    if age <= 12:
-        return "Criança"
-    elif age <= 17:
-        return "Adolescente"
-    else:
-        return "Adulto"
+    if age <= 12: return "Criança"
+    if age <= 17: return "Adolescente"
+    return "Adulto"
 
 def save_profile(name, age):
     category = get_category(age)
-    conn = sqlite3.connect(DB_PATH)
+    conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute(
-        "INSERT INTO profiles (name, age, category) VALUES (?, ?, ?)",
-        (name, age, category)
-    )
-    profile_id = cursor.lastrowid
+    if IS_VERCEL:
+        cursor.execute(
+            "INSERT INTO profiles (name, age, category) VALUES (%s, %s, %s) RETURNING id",
+            (name, age, category)
+        )
+        profile_id = cursor.fetchone()[0]
+    else:
+        cursor.execute(
+            "INSERT INTO profiles (name, age, category) VALUES (?, ?, ?)",
+            (name, age, category)
+        )
+        profile_id = cursor.lastrowid
     conn.commit()
     conn.close()
     return profile_id, category
 
 def get_profiles():
-    if not os.path.exists(DB_PATH):
-        init_db()
-        return []
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    cursor.execute("SELECT id, name, age, category FROM profiles ORDER BY created_at DESC")
-    rows = cursor.fetchall()
+    conn = get_connection()
+    if IS_VERCEL:
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
+        cursor.execute("SELECT id, name, age, category FROM profiles ORDER BY id DESC")
+        rows = cursor.fetchall()
+        profiles = [dict(row) for row in rows]
+    else:
+        cursor = conn.cursor()
+        cursor.execute("SELECT id, name, age, category FROM profiles ORDER BY id DESC")
+        rows = cursor.fetchall()
+        profiles = [{"id": r[0], "name": r[1], "age": r[2], "category": r[3]} for r in rows]
     conn.close()
-    return [{"id": r[0], "name": r[1], "age": r[2], "category": r[3]} for r in rows]
+    return profiles
 
 def get_profile_by_id(profile_id):
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    cursor.execute("SELECT id, name, age, category FROM profiles WHERE id = ?", (profile_id,))
-    row = cursor.fetchone()
+    conn = get_connection()
+    if IS_VERCEL:
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
+        cursor.execute("SELECT id, name, age, category FROM profiles WHERE id = %s", (profile_id,))
+        row = cursor.fetchone()
+        profile = dict(row) if row else None
+    else:
+        cursor = conn.cursor()
+        cursor.execute("SELECT id, name, age, category FROM profiles WHERE id = ?", (profile_id,))
+        row = cursor.fetchone()
+        profile = {"id": row[0], "name": row[1], "age": row[2], "category": row[3]} if row else None
     conn.close()
-    if row:
-        return {"id": row[0], "name": row[1], "age": row[2], "category": row[3]}
-    return None
+    return profile
 
 def delete_profile(profile_id):
-    conn = sqlite3.connect(DB_PATH)
+    conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM profiles WHERE id = ?", (profile_id,))
+    query = "DELETE FROM profiles WHERE id = %s" if IS_VERCEL else "DELETE FROM profiles WHERE id = ?"
+    cursor.execute(query, (profile_id,))
     conn.commit()
     conn.close()
     return True
 
 def update_profile(profile_id, name, age):
     category = get_category(age)
-    conn = sqlite3.connect(DB_PATH)
+    conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute(
-        "UPDATE profiles SET name = ?, age = ?, category = ? WHERE id = ?",
-        (name, age, category, profile_id)
-    )
+    if IS_VERCEL:
+        cursor.execute(
+            "UPDATE profiles SET name = %s, age = %s, category = %s WHERE id = %s",
+            (name, age, category, profile_id)
+        )
+    else:
+        cursor.execute(
+            "UPDATE profiles SET name = ?, age = ?, category = ? WHERE id = ?",
+            (name, age, category, profile_id)
+        )
     conn.commit()
     conn.close()
     return True
 
 # Initialize on import
-init_db()
+try:
+    init_db()
+except Exception as e:
+    print(f"DATABASE INIT ERROR (Might be missing Postgres URL on Vercel): {e}")
+
