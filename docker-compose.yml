@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  meu-youtube:
+    build: .
+    container_name: meu-youtube-v2
+    ports:
+      - "5005:5005"
+    volumes:
+      - .:/app
+      - profiles_data:/app/profiles.db
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+
+volumes:
+  profiles_data:
