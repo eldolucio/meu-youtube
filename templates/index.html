@@ -8,9 +8,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body class="oled-theme">
+<div id="refresh-progress" class="refresh-progress"></div>
 <header class="yt-header">
     <div class="logo-area">
-        <a href="/" class="my-logo">meu <span>youtube</span> <small style="font-size: 10px; opacity: 0.3; margin-left: 5px;">v2.0</small></a>
+        <a href="/" class="my-logo">meu <span>youtube</span> <small style="font-size: 10px; opacity: 0.3; margin-left: 5px;">v2.2</small></a>
     </div>
     <div class="search-area">
         <form id="search-form" class="filter-form">
@@ -38,6 +39,28 @@
 
 <div class="app-container">
     <aside class="sidebar">
+        <!-- Active Profile Section -->
+        <div class="active-profile-header">
+            <div class="profile-info">
+                <span class="profile-name">{{ profile.name }}</span>
+                <span class="profile-badge badge-{{ profile.category | lower }}">{{ profile.category }}</span>
+            </div>
+            <button id="profile-switch-trigger" class="profile-switch-btn" title="Trocar Perfil">
+                <i class="fas fa-user-friends"></i>
+            </button>
+        </div>
+
+        <div id="profile-selector" class="profile-selector-dropdown">
+            <div class="selector-header">Seus Perfis</div>
+            <div id="profiles-list">
+                <!-- Profiles will be loaded here via JS or simple list if passed -->
+            </div>
+            <a href="/create-profile" class="add-profile-link">+ Novo Perfil</a>
+            <a href="/manage-profiles" class="add-profile-link" style="color: var(--yt-text-secondary); border-top: 1px solid #1a1a1a; font-size: 10px;">⚙️ Gerenciar Usuários</a>
+        </div>
+
+        <div class="sidebar-divider"></div>
+
         <nav class="sidebar-nav">
             <a href="/" class="sidebar-item nav-link-ajax active" data-target="home">
                 <svg viewBox="0 0 24 24" width="24" height="24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8" fill="currentColor"/></svg>
@@ -60,19 +83,12 @@
         <div class="sidebar-divider"></div>
         
         <div class="sidebar-section">
-            <h3 class="sidebar-title">Canais</h3>
-            {% set channels = [] %}
-            {% for v in videos %}
-                {% if v.channel not in channels %}
-                    {% set _ = channels.append(v.channel) %}
-                {% endif %}
-            {% endfor %}
-            
+            <h3 class="sidebar-title">INSCRIÇÕES</h3>
             <div id="dynamic-channel-list">
-                {% for channel in channels[:15] %}
-                <a href="/?channel={{ channel }}" class="sidebar-item channel-item nav-link-ajax" data-target="home" data-channel="{{ channel }}">
-                    <div class="channel-avatar">{{ channel[0] | upper }}</div>
-                    <span>{{ channel }}</span>
+                {% for ch in channels %}
+                <a href="/?channel={{ ch.name }}" class="sidebar-item channel-item nav-link-ajax" data-target="home" data-channel="{{ ch.name }}" title="{{ ch.name }}">
+                    <img src="{{ ch.icon }}" class="sub-icon" loading="lazy" onerror="this.src='https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png'">
+                    <span>{{ ch.name }}</span>
                 </a>
                 {% endfor %}
             </div>
@@ -155,6 +171,25 @@
         <button id="settings-close" class="close-btn">&times;</button>
     </div>
     <div class="settings-body">
+        <div class="settings-group" style="border-bottom: 2px solid var(--yt-accent); padding-bottom: 15px; margin-bottom: 20px;">
+            <label class="group-label" style="color: var(--yt-accent);">⚡ AUTO-REFRESH (PANDORA)</label>
+            <div class="setting-row">
+                <span>Ativar Monitoramento</span>
+                <label class="switch">
+                    <input type="checkbox" id="pref-auto-refresh">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+            <div class="setting-row">
+                <span>Intervalo (Minutos)</span>
+                <select id="pref-refresh-interval" class="blacklist-input" style="width: 80px; margin-top: 0; background: #111;">
+                    <option value="5">5</option>
+                    <option value="15" selected>15</option>
+                    <option value="30">30</option>
+                    <option value="60">60</option>
+                </select>
+            </div>
+        </div>
         <div class="settings-group">
             <label class="group-label">Filtros de Conteúdo</label>
             <div class="setting-row" style="flex-direction: column; align-items: flex-start;">
@@ -198,10 +233,30 @@
             </div>
         </div>
         <div class="settings-group">
-            <label class="group-label">Gerenciamento & Backup</label>
-            <button onclick="exportHistory()" class="action-btn">Exportar Histórico (JSON)</button>
-            <form action="/refresh" method="POST">
-                <button type="submit" class="action-btn secondary">Limpar Cache</button>
+            <label class="group-label">Auto-Refresh (15-30m)</label>
+            <div class="setting-row">
+                <span>Ativar Auto-Intervalo</span>
+                <label class="switch">
+                    <input type="checkbox" id="pref-auto-refresh">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+            <div class="setting-row">
+                <span>Minutos</span>
+                <select id="pref-refresh-interval" class="blacklist-input" style="width: 80px; margin-top: 0;">
+                    <option value="5">5</option>
+                    <option value="15" selected>15</option>
+                    <option value="30">30</option>
+                    <option value="60">60</option>
+                </select>
+            </div>
+        </div>
+        <div class="settings-group">
+            <label class="group-label">Gerenciamento & Perfis</label>
+            <a href="/manage-profiles" class="action-btn" style="text-decoration: none; text-align: center; margin-bottom: 10px; display: block;">Gerir Usuários / Perfis</a>
+            <button onclick="exportHistory()" class="action-btn secondary">Exportar Histórico (JSON)</button>
+            <form action="/refresh" method="POST" style="margin-top: 10px;">
+                <button type="submit" class="action-btn secondary" style="width: 100%;">Limpar Cache</button>
             </form>
         </div>
     </div>
@@ -258,6 +313,57 @@
             if (url !== '#' && url !== '/') window.history.pushState({}, '', url);
         });
     });
+
+    // Auto-Refresh Logic
+    let autoRefreshTimer = null;
+    const progressBar = document.getElementById('refresh-progress');
+
+    function initAutoRefresh() {
+        if (autoRefreshTimer) clearInterval(autoRefreshTimer);
+        
+        const isEnabled = document.getElementById('pref-auto-refresh').checked;
+        if (!isEnabled) {
+            progressBar.style.width = '0%';
+            return;
+        }
+
+        const intervalMin = parseInt(document.getElementById('pref-refresh-interval').value);
+        const intervalMs = intervalMin * 60 * 1000;
+        const stepMs = 500; 
+        let elapsedMs = 0;
+
+        autoRefreshTimer = setInterval(() => {
+            // Pause if player is open
+            if (playerModal.classList.contains('visible')) return;
+            
+            elapsedMs += stepMs;
+            const progress = Math.min((elapsedMs / intervalMs) * 100, 100);
+            progressBar.style.width = progress + '%';
+
+            if (elapsedMs >= intervalMs) {
+                elapsedMs = 0;
+                refreshFeedSilently();
+            }
+        }, stepMs);
+    }
+
+    async function refreshFeedSilently() {
+        progressBar.style.backgroundColor = '#fff';
+        setTimeout(() => progressBar.style.backgroundColor = '', 1000);
+        
+        try {
+            const res = await fetch('/api/refresh', { method: 'POST' });
+            const html = await res.text();
+            
+            // Only update if we are on the Home view or filtered view
+            if (viewTitle.textContent === 'Início' || viewTitle.textContent.startsWith('Canal:')) {
+                contentArea.innerHTML = html;
+                applyFilters();
+            }
+        } catch (e) {
+            console.error("Silent refresh failed", e);
+        }
+    }
 
     // Player Logic
     window.openPlayer = (videoId, title, channel, thumb, link) => {
@@ -397,7 +503,9 @@
         thumbSize: document.getElementById('pref-thumb-size'), 
         thumbOpacity: document.getElementById('pref-thumb-opacity'),
         blacklist: document.getElementById('pref-blacklist'),
-        hideLives: document.getElementById('pref-hide-lives')
+        hideLives: document.getElementById('pref-hide-lives'),
+        autoRefresh: document.getElementById('pref-auto-refresh'),
+        refreshInterval: document.getElementById('pref-refresh-interval')
     };
 
     const applyPrefs = () => {
@@ -433,10 +541,46 @@
         applyPrefs();
     }
 
-    Object.values(prefs).forEach(input => input.addEventListener('input', applyPrefs));
+    Object.values(prefs).forEach(input => input.addEventListener('input', () => {
+        applyPrefs();
+        if (input.id === 'pref-auto-refresh' || input.id === 'pref-refresh-interval') {
+            initAutoRefresh();
+        }
+    }));
     
+    // Profiles Logic
+    const profileTrigger = document.getElementById('profile-switch-trigger');
+    const profileSelector = document.getElementById('profile-selector');
+    const profilesList = document.getElementById('profiles-list');
+
+    profileTrigger.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const isVisible = profileSelector.style.display === 'block';
+        
+        if (!isVisible) {
+            // Load profiles
+            const res = await fetch('/api/profiles');
+            const data = await res.json();
+            profilesList.innerHTML = data.profiles.map(p => `
+                <a href="/switch-profile/${p.id}" class="profile-option">
+                    ${p.name} <span class="profile-badge badge-${p.category.toLowerCase()}" style="margin-left: 5px; font-size: 8px;">${p.category}</span>
+                </a>
+            `).join('');
+            profileSelector.style.display = 'block';
+        } else {
+            profileSelector.style.display = 'none';
+        }
+    });
+
+    document.addEventListener('click', () => {
+        profileSelector.style.display = 'none';
+    });
+
+    profileSelector.addEventListener('click', (e) => e.stopPropagation());
+
     // Initial load
     applyFilters();
+    initAutoRefresh();
 </script>
 </body>
 </html>

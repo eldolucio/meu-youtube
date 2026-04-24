@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Gerir Perfis - meu youtube</title>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background-color: #000; color: #fff; }
+        .manage-container {
+            max-width: 600px;
+            margin: 80px auto;
+            padding: 20px;
+        }
+        .manage-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--yt-border);
+            padding-bottom: 20px;
+        }
+        .manage-header h1 {
+            font-size: 24px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .manage-header h1 span { color: var(--yt-accent); }
+        
+        .profile-list { display: flex; flex-direction: column; gap: 15px; }
+        .profile-card-manage {
+            background: #050505;
+            border: 1px solid var(--yt-border);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: border-color 0.3s;
+        }
+        .profile-card-manage:hover { border-color: var(--yt-accent); }
+        
+        .profile-meta h2 { font-size: 18px; margin: 0; text-transform: uppercase; }
+        .profile-meta p { font-size: 12px; opacity: 0.5; margin: 5px 0 0 0; }
+        
+        .profile-actions { display: flex; gap: 10px; }
+        .action-icon-btn {
+            background: none;
+            border: 1px solid #333;
+            color: #fff;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .action-icon-btn:hover { border-color: var(--yt-accent); color: var(--yt-accent); }
+        .action-icon-btn.delete:hover { border-color: #ff4d4d; color: #ff4d4d; }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 40px;
+            color: var(--yt-text-secondary);
+            text-decoration: none;
+            font-size: 12px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+        .back-link:hover { color: #fff; }
+
+        /* Modal Overlay */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 5000;
+            align-items: center; justify-content: center;
+        }
+        .modal-content {
+            background: #080808;
+            border: 1px solid #333;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+        .modal-btns { display: flex; gap: 15px; margin-top: 25px; }
+        .m-btn { flex: 1; padding: 12px; border: none; font-weight: 700; cursor: pointer; text-transform: uppercase; }
+        .m-btn.cancel { background: #222; color: #fff; }
+        .m-btn.confirm { background: #ff4d4d; color: #fff; }
+    </style>
+</head>
+<body>
+    <div class="manage-container">
+        <div class="manage-header">
+            <h1>GERIR <span>PERFIS</span></h1>
+            <a href="/create-profile" class="add-profile-link" style="padding: 10px 20px; border: 1px solid var(--yt-accent);">+ NOVO</a>
+        </div>
+
+        <div class="profile-list">
+            {% for p in profiles %}
+            <div class="profile-card-manage">
+                <div class="profile-meta">
+                    <h2>{{ p.name }}</h2>
+                    <p>{{ p.category }} • {{ p.age }} anos</p>
+                </div>
+                <div class="profile-actions">
+                    <button class="action-icon-btn" onclick="openEditModal({{ p | tojson }})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="action-icon-btn delete" onclick="confirmDelete({{ p.id }}, '{{ p.name }}')">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <a href="/" class="back-link">← Voltar ao Dashboard</a>
+    </div>
+
+    <!-- Confirm Delete Modal -->
+    <div id="delete-modal" class="modal">
+        <div class="modal-content">
+            <h3>EXCLUIR PERFIL?</h3>
+            <p id="delete-text" style="opacity: 0.7; margin-top: 10px;"></p>
+            <div class="modal-btns">
+                <button class="m-btn cancel" onclick="closeModals()">CANCELAR</button>
+                <form id="delete-form" method="POST" style="flex: 1;">
+                    <button type="submit" class="m-btn confirm" style="width: 100%;">EXCLUIR</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function confirmDelete(id, name) {
+            document.getElementById('delete-text').textContent = `Tens a certeza que queres apagar o perfil "${name}"? Esta ação não pode ser desfeita.`;
+            document.getElementById('delete-form').action = `/delete-profile/${id}`;
+            document.getElementById('delete-modal').style.display = 'flex';
+        }
+        
+        function closeModals() {
+            document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
+        }
+        
+        // Close on escape
+        document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeModals(); });
+    </script>
+</body>
+</html>

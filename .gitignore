@@ -21,3 +21,4 @@ SUBSCRIPTION_MANAGER_HISTORY.json
 .vscode/
 .idea/
 .DS_Store
+profiles.db
