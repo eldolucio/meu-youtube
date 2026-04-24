@@ -171,6 +171,12 @@ def sobre_2016():
 # Create a handler for Vercel
 app_handler = app.app
 
+# Emergency static file server for Vercel
+@app.route('/static/<path:path>')
+def send_static(path):
+    from flask import send_from_directory
+    return send_from_directory(app.app.static_folder, path)
+
 if __name__ == "__main__":
     print("INICIANDO SERVIDOR EM http://127.0.0.1:5005")
     app.run(port=5005)
