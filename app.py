@@ -29,7 +29,6 @@ def index():
     videos = get_cached_videos()
     if channel_filter:
         videos = [v for v in videos if channel_filter in v["channel"].lower()]
-    # Serving template index.html (standardized from index_v2.html)
     return render_template("index.html", videos=videos, request=request)
 
 @app.route("/api/videos")
@@ -61,9 +60,14 @@ def refresh():
 def upload():
     if 'file' in request.files:
         file = request.files['file']
-        if file.filename.endswith('.xml'):
-            # Security: Ensure filename is safe or use a fixed name
+        filename = file.filename.lower()
+        if filename.endswith('.xml'):
             file.save('subscription_manager.xml')
+            if os.path.exists('subscriptions.csv'): os.remove('subscriptions.csv') # Priority to XML
+            clear_cache()
+        elif filename.endswith('.csv'):
+            file.save('subscriptions.csv')
+            if os.path.exists('subscription_manager.xml'): os.remove('subscription_manager.xml') # Priority to latest
             clear_cache()
     return redirect("/")
 

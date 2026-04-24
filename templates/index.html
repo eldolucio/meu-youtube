@@ -84,9 +84,10 @@
             <h3 class="sidebar-title">CONFG. DE FEED</h3>
             <form action="/upload" method="POST" enctype="multipart/form-data" class="upload-form" id="upload-form">
                 <label for="file-upload" class="custom-file-upload">
-                    IMPORTAR XML
+                    IMPORTAR FEED (CSV/XML)
                 </label>
-                <input id="file-upload" name="file" type="file" accept=".xml" onchange="this.form.submit()"/>
+                <input id="file-upload" name="file" type="file" accept=".xml,.csv" onchange="this.form.submit()"/>
+                <p style="font-size: 10px; opacity: 0.5; margin-top: 8px;">Use o Google Takeout para obter o CSV de inscrições em 2026.</p>
             </form>
             <div class="status-indicator">
                 <span class="status-dot"></span>

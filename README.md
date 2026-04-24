@@ -1,5 +1,5 @@
 # meu **youtube** 🌑
-> Dashboard industrial focado em subscrições, privacidade e produtividade.
+> Dashboard industrial focado em subscrições, privacidade e produtividade (Updated 2026).
 
 ![Preview do Dashboard](screenshot.png)
 
@@ -12,43 +12,38 @@ O **meu-youtube** é um dashboard privado e ultra-leve projetado para quem usa o
 ## 🚀 Destaques (Features)
 
 - **Estética Industrial**: Design minimalista com foco em alto contraste e tipografia **Barlow**.
-- **OLED Black Mode**: Fundo em preto absoluto (`#000000`) para máxima imersão e economia de energia.
+- **OLED Black Mode**: Fundo em preto absoluto (`#000000`) para máxima imersão.
+- **2026 Ready**: Suporte total para importação via **Google Takeout CSV** (o novo padrão do YouTube).
 - **No-Ads Player**: Utiliza `youtube-nocookie.com` para evitar rastreamento e publicidade.
-- **Filtro de Ruído**: Opções integradas para ocultar *Shorts*, *Live Streams* e palavras-chave específicas.
-- **SPA Experience**: Navegação rápida via AJAX para Histórico, Biblioteca e Inscrições.
-- **Privacidade Total**: Seus dados de navegação e preferências são salvos apenas no seu navegador (`localStorage`).
+- **Filtro de Ruído**: Opções integradas para ocultar *Shorts*, *Live Streams* e palavras-chave.
+- **SPA Experience**: Navegação rápida via AJAX.
 
 ---
 
-## 🛠️ Como importar seu feed
+## 🛠️ Como importar seu feed (Atualizado 2026)
 
-Para carregar suas inscrições sem precisar de APIs complexas, siga este processo:
+Como o YouTube removeu a exportação direta de XML, siga estes passos oficiais:
 
-1. Acesse o [Gerenciador de Inscrições do YouTube](https://www.youtube.com/subscription_manager).
-2. Vá até o final da página e clique em **Exportar Inscrições**.
-3. No seu Dashboard, clique no ícone de **Engrenagem** na barra lateral.
-4. Escolha o arquivo `.xml` baixado e o sistema carregará seu feed instantaneamente.
+1. Acesse o **[Google Takeout](https://takeout.google.com/)**.
+2. Clique em **"Desmarcar tudo"**.
+3. Marque apenas **"YouTube e YouTube Music"**.
+4. Clique em **"Todos os dados do YouTube incluídos"** e deixe marcado apenas **"subscriptions"**.
+5. Avance, crie a exportação e baixe o arquivo ZIP.
+6. Dentro do ZIP, procure pela pasta `subscriptions` e localize o arquivo **`subscriptions.csv`**.
+7. No seu Dashboard, abra a **Engrenagem** e faça o upload desse arquivo `.csv`.
 
 ---
 
 ## 📦 Instalação e Deploy
 
 ### Deploy na Vercel (Recomendado)
-Este projeto está otimizado para a **Vercel**. 
 1. Conecte seu repositório GitHub à Vercel.
 2. O sistema detectará automaticamente o `vercel.json` e o `requirements.txt`.
-3. Clique em **Deploy** e seu dashboard estará online.
+3. Clique em **Deploy**.
 
 ### Rodando Localmente
-1. Clone o repositório.
-2. Instale as dependências: `pip install -r requirements.txt`.
-3. Execute: `python app.py`.
-4. Acesse `http://localhost:8000`.
-
----
-
-## 🌑 Sobre o Design "2016"
-O layout foi inspirado na era de ouro da interface do YouTube, onde a simplicidade e a lista de vídeos eram o centro da experiência, antes da saturação de recomendações algorítmicas. Combinado com o **OLED Black**, ele oferece uma leitura limpa e técnica para o MacBook Air.
+1. Instale as dependências: `pip install -r requirements.txt`.
+2. Execute: `python app.py`.
 
 ---
 
