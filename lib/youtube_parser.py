@@ -14,19 +14,32 @@ _cache = {"data": None, "ts": 0}
 
 def parse_subscriptions():
     """Parse the YouTube subscriptions safely from XML (legacy) or CSV (Google Takeout 2026)."""
-    # Try XML first
-    if os.path.exists("subscription_manager.xml"):
+    # Look for any CSV or XML file that might contain subscriptions
+    files_to_check = ["subscription_manager.xml", "subscriptions.csv", "inscricoes.csv", "inscrições.csv"]
+    
+    # Priority check
+    active_file = None
+    for f in files_to_check:
+        if os.path.exists(f):
+            active_file = f
+            break
+            
+    if not active_file:
+        return []
+
+    # XML logic
+    if active_file.endswith(".xml"):
         try:
-            tree = ET.parse("subscription_manager.xml")
+            tree = ET.parse(active_file)
             return [node.get('xmlUrl') for node in tree.findall('.//outline[@xmlUrl]')]
         except Exception as e:
             print(f"Error parsing XML: {e}")
             
-    # Try CSV (Google Takeout)
-    if os.path.exists("subscriptions.csv"):
+    # CSV logic (Google Takeout - Multi-language support)
+    if active_file.endswith(".csv"):
         urls = []
         try:
-            with open("subscriptions.csv", newline='', encoding='utf-8') as csvfile:
+            with open(active_file, newline='', encoding='utf-8') as csvfile:
                 # Handle possible Byte Order Mark (BOM)
                 content = csvfile.read()
                 if content.startswith('\ufeff'):
@@ -35,9 +48,18 @@ def parse_subscriptions():
                 
                 reader = csv.DictReader(csvfile)
                 for row in reader:
-                    # Google Takeout CSV uses "Channel Id" or "Channel ID"
-                    channel_id = row.get('Channel Id') or row.get('Channel ID')
-                    if channel_id:
+                    # Support for multiple languages and cases
+                    # English: "Channel Id", Portuguese: "ID do canal", Spanish: "ID del canal", etc.
+                    channel_id = (
+                        row.get('Channel Id') or 
+                        row.get('Channel ID') or 
+                        row.get('ID do canal') or 
+                        row.get('Id do canal') or
+                        # Fallback: check first column if headers are weird
+                        list(row.values())[0] if row.values() else None
+                    )
+                    
+                    if channel_id and channel_id.startswith('UC'):
                         urls.append(f"https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}")
         except Exception as e:
             print(f"Error parsing CSV: {e}")
@@ -63,7 +85,10 @@ def extract_video_id(url):
             if parsed_url.path.startswith('/v/'):
                 return parsed_url.path.split('/')[2]
             if parsed_url.path.startswith('/shorts/'):
-                return parsed_url.path.split('/')[2]
+                # Handle /shorts/VIDEO_ID format
+                parts = parsed_url.path.split('/')
+                if len(parts) >= 3:
+                    return parts[2]
     except Exception:
         pass
     return None
@@ -100,6 +125,7 @@ def get_cached_videos(ttl=600):
 
     video_list = []
 
+    # Use a small pool to avoid overloading small environments
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
         feeds = list(executor.map(fetch_feed, urls))
 

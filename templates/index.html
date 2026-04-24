@@ -10,7 +10,7 @@
 <body class="oled-theme">
 <header class="yt-header">
     <div class="logo-area">
-        <a href="/" class="my-logo">meu <span>youtube</span></a>
+        <a href="/" class="my-logo">meu <span>youtube</span> <small style="font-size: 10px; opacity: 0.3; margin-left: 5px;">v2.0</small></a>
     </div>
     <div class="search-area">
         <form id="search-form" class="filter-form">
@@ -84,10 +84,10 @@
             <h3 class="sidebar-title">CONFG. DE FEED</h3>
             <form action="/upload" method="POST" enctype="multipart/form-data" class="upload-form" id="upload-form">
                 <label for="file-upload" class="custom-file-upload">
-                    IMPORTAR FEED (CSV/XML)
+                    IMPORTAR ARQUIVO
                 </label>
-                <input id="file-upload" name="file" type="file" accept=".xml,.csv" onchange="this.form.submit()"/>
-                <p style="font-size: 10px; opacity: 0.5; margin-top: 8px;">Use o Google Takeout para obter o CSV de inscrições em 2026.</p>
+                <input id="file-upload" name="file" type="file" onchange="this.form.submit()"/>
+                <p style="font-size: 10px; opacity: 0.5; margin-top: 8px;">Dica: Selecione o arquivo <b>inscrições.csv</b> que você baixou.</p>
             </form>
             <div class="status-indicator">
                 <span class="status-dot"></span>
@@ -114,7 +114,7 @@
                 </div>
                 <div class="meta">
                     <h2 class="title">
-                        <a onclick="openPlayer('{{ v.video_id }}', '{{ v.title | replace("'", "\\'") }}', '{{ v.channel | replace("'", "\\'") }}', '{{ v.thumbnail | replace("'", "\\'") }}', '{{ v.link | replace("'", "\\'") }}')">{{ v.title }}</a>
+                        <a onclick="openPlayer({{ v.video_id | tojson }}, {{ v.title | tojson }}, {{ v.channel | tojson }}, {{ v.thumbnail | tojson }}, {{ v.link | tojson }})">{{ v.title }}</a>
                     </h2>
                     <div class="meta-row">
                         <p class="channel">{{ v.channel }}</p>

@@ -79,4 +79,5 @@ def sobre_2016():
 app_handler = app.app
 
 if __name__ == "__main__":
-    app.run(port=8000)
+    print("INICIANDO SERVIDOR EM http://127.0.0.1:5001")
+    app.run(port=5001)
