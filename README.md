@@ -1,50 +1,56 @@
-# meu **youtube** 🌑
-> Dashboard industrial focado em subscrições, privacidade e produtividade (Updated 2026).
+# meu **youtube** 🌑 v2.2
+> O seu dock de monitoramento ultra-rápido, livre de distrações e focado em alta performance (2026).
 
 ![Preview do Dashboard](screenshot.png)
 
 ## ⚙️ O que é este projeto?
 
-O **meu-youtube** é um dashboard privado e ultra-leve projetado para quem usa o YouTube como ferramenta de trabalho e estudo. Ele elimina o ruído algorítmico, anúncios e distrações, mantendo o foco apenas no conteúdo que você escolheu seguir.
+O **meu-youtube** não é apenas mais um leitor de vídeos; é um **Monitor Tecnológico Industrial** feito para editores de vídeo, criadores e profissionais que precisam de referências sem o ruído do algoritmo do YouTube. 
+
+Ele elimina anúncios, shorts e recomendações viciantes, entregando um feed puro, preto absoluto (OLED) e totalmente sob seu controle.
 
 ---
 
-## 🚀 Destaques (Features)
+## 🚀 Novas Funcionalidades (v2.2)
 
-- **Estética Industrial**: Design minimalista com foco em alto contraste e tipografia **Barlow**.
-- **OLED Black Mode**: Fundo em preto absoluto (`#000000`) para máxima imersão.
-- **2026 Ready**: Suporte total para importação via **Google Takeout CSV** (o novo padrão do YouTube).
-- **No-Ads Player**: Utiliza `youtube-nocookie.com` para evitar rastreamento e publicidade.
-- **Filtro de Ruído**: Opções integradas para ocultar *Shorts*, *Live Streams* e palavras-chave.
-- **SPA Experience**: Navegação rápida via AJAX.
+### 🌓 Monitor de Edição (Auto-Refresh)
+O dashboard agora conta com um **Auto-Refresh Assíncrono**. Uma linha de progresso finíssima no topo indica a próxima varredura de vídeos. Ele atualiza seu feed em segundo plano sem interromper o que você está assistindo no player. Ideal para deixar um monitor de lado enquanto você trabalha em outra tela.
+
+### 👤 Gestão Multi-Perfil & Segurança
+Agora a casa inteira pode usar! Implementamos uma gestão completa de perfis baseada em idade:
+- **Adulto (18+)**: Acesso total, focado em monitoramento profissional.
+- **Adolescente**: Filtros de conteúdo moderados.
+- **Criança**: Filtro restritivo automático (remove vídeos de política, violência, etc).
+*Cada perfil tem seu próprio histórico e biblioteca de vídeos salvos.*
+
+### 🎨 Estética Industrial OLED
+Fundo em **#000000** real, tipografia **Barlow Condensed** e acentos em **Verde Limão Neon**. O dashboard foi desenhado para ser esteticamente premium e economizar energia em telas OLED.
 
 ---
 
-## 🛠️ Como importar seu feed (Atualizado 2026)
+## 🛠️ Como usar (Guia Rápido 2026)
 
-Como o YouTube removeu a exportação direta de XML, siga estes passos oficiais:
+### 1. Traga seus inscritos (Google Takeout)
+O YouTube agora usa o formato CSV. Veja como importar:
+1. Vá ao **[Google Takeout](https://takeout.google.com/)**, marque apenas **YouTube** e selecione a pasta **subscriptions**.
+2. Baixe o arquivo **`subscriptions.csv`**.
+3. No dashboard, abra a **Engrenagem ⚙️** e faça o upload.
 
-1. Acesse o **[Google Takeout](https://takeout.google.com/)**.
-2. Clique em **"Desmarcar tudo"**.
-3. Marque apenas **"YouTube e YouTube Music"**.
-4. Clique em **"Todos os dados do YouTube incluídos"** e deixe marcado apenas **"subscriptions"**.
-5. Avance, crie a exportação e baixe o arquivo ZIP.
-6. Dentro do ZIP, procure pela pasta `subscriptions` e localize o arquivo **`subscriptions.csv`**.
-7. No seu Dashboard, abra a **Engrenagem** e faça o upload desse arquivo `.csv`.
+### 2. Configure seu Perfil
+Ao entrar pela primeira vez, crie seu perfil. Se quiser gerenciar outros usuários ou trocar de conta, clique no seu nome na barra lateral ou vá em **Gerenciar Usuários** nas configurações.
 
 ---
 
 ## 📦 Instalação e Deploy
 
-### Deploy na Vercel (Recomendado)
-1. Conecte seu repositório GitHub à Vercel.
-2. O sistema detectará automaticamente o `vercel.json` e o `requirements.txt`.
-3. Clique em **Deploy**.
+**Deploy na Vercel (Recomendado)**:
+Conecte este repositório e clique em Deploy. O sistema já está configurado para o ambiente Vercel.
 
-### Rodando Localmente
-1. Instale as dependências: `pip install -r requirements.txt`.
-2. Execute: `python app.py`.
+**Rodando Localmente**:
+1. Instale: `pip install -r requirements.txt`
+2. Execute: `python app.py` (Porta padrão: `5005`)
 
 ---
 
-**Tecnologias**: Python (Antigravity/Flask), Vercel, JavaScript Vanilla, CSS Industrial.
+**Tecnologias**: Python (Flask/Antigravity), SQLite (Perfis), AJAX/Fetch (SPA), CSS Modular Industrial.
+**Desenvolvido para Máxima Produtividade.** 🌑⚙️📈
