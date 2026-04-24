@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Feed de Subscrições YouTube</title>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="oled-theme">
+<header class="yt-header">
+    <div class="logo-area">
+        <a href="/" class="my-logo">meu <span>youtube</span></a>
+    </div>
+    <div class="search-area">
+        <form id="search-form" class="filter-form">
+            <input type="text" name="channel" id="search-input" placeholder="Pesquisar canal..." value="{{ request.args.get('channel','') }}">
+            <button type="submit">
+                <svg viewBox="0 0 24 24" width="20" height="20">
+                    <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="white"/>
+                </svg>
+            </button>
+        </form>
+    </div>
+    <div class="actions">
+        <form method="POST" action="/refresh" class="refresh-form" id="refresh-form">
+            <button type="submit" class="refresh-btn">Atualizar</button>
+        </form>
+        <a href="/sobre-2016" class="nav-link">Sobre 2016</a>
+        <button id="theme-toggle" class="theme-btn" title="Alternar tema">🌙</button>
+        <button id="settings-toggle" class="settings-btn" title="Configurações">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+            </svg>
+        </button>
+    </div>
+</header>
+
+<div class="app-container">
+    <aside class="sidebar">
+        <nav class="sidebar-nav">
+            <a href="/" class="sidebar-item nav-link-ajax active" data-target="home">
+                <svg viewBox="0 0 24 24" width="24" height="24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8" fill="currentColor"/></svg>
+                <span>Início</span>
+            </a>
+            <a href="/history" class="sidebar-item nav-link-ajax" data-target="history">
+                <svg viewBox="0 0 24 24" width="24" height="24"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z" fill="currentColor"/></svg>
+                <span>Histórico</span>
+            </a>
+            <a href="/library" class="sidebar-item nav-link-ajax" data-target="library">
+                <svg viewBox="0 0 24 24" width="24" height="24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12l5-3-5-3v6z" fill="currentColor"/></svg>
+                <span>Biblioteca</span>
+            </a>
+            <a href="/channels" class="sidebar-item nav-link-ajax" data-target="channels">
+                <svg viewBox="0 0 24 24" width="24" height="24"><path d="M18.7 8.7l-1.4-1.4-7.3 7.3-3.3-3.3-1.4 1.4 4.7 4.7z" fill="currentColor"/></svg>
+                <span>Inscrições</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-divider"></div>
+        
+        <div class="sidebar-section">
+            <h3 class="sidebar-title">Canais</h3>
+            {% set channels = [] %}
+            {% for v in videos %}
+                {% if v.channel not in channels %}
+                    {% set _ = channels.append(v.channel) %}
+                {% endif %}
+            {% endfor %}
+            
+            <div id="dynamic-channel-list">
+                {% for channel in channels[:15] %}
+                <a href="/?channel={{ channel }}" class="sidebar-item channel-item nav-link-ajax" data-target="home" data-channel="{{ channel }}">
+                    <div class="channel-avatar">{{ channel[0] | upper }}</div>
+                    <span>{{ channel }}</span>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <div class="sidebar-section settings-section">
+            <h3 class="sidebar-title">CONFG. DE FEED</h3>
+            <form action="/upload" method="POST" enctype="multipart/form-data" class="upload-form" id="upload-form">
+                <label for="file-upload" class="custom-file-upload">
+                    IMPORTAR XML
+                </label>
+                <input id="file-upload" name="file" type="file" accept=".xml" onchange="this.form.submit()"/>
+            </form>
+            <div class="status-indicator">
+                <span class="status-dot"></span>
+                <span class="status-text text-active-channels">{{ channels|length }} canais ativos</span>
+            </div>
+        </div>
+    </aside>
+
+    <main class="list">
+        <div id="loading-overlay" class="loading-overlay" style="display: none;">
+            <div class="spinner"></div>
+            <p>Sincronizando RSS...</p>
+        </div>
+
+        <div id="view-header" style="margin-bottom: 20px;">
+            <h1 id="view-title" style="font-size: 24px; text-transform: uppercase; letter-spacing: 2px;">Início</h1>
+        </div>
+
+        <div id="content-area">
+            {% for v in videos %}
+            <article class="item" data-id="{{ v.link }}">
+                <div class="thumb" onclick="openPlayer('{{ v.video_id }}', '{{ v.title | replace("'", "\\'") }}', '{{ v.channel | replace("'", "\\'") }}', '{{ v.thumbnail | replace("'", "\\'") }}', '{{ v.link | replace("'", "\\'") }}')">
+                    <img src="{{ v.thumbnail }}" alt="thumbnail" loading="lazy">
+                </div>
+                <div class="meta">
+                    <h2 class="title">
+                        <a onclick="openPlayer('{{ v.video_id }}', '{{ v.title | replace("'", "\\'") }}', '{{ v.channel | replace("'", "\\'") }}', '{{ v.thumbnail | replace("'", "\\'") }}', '{{ v.link | replace("'", "\\'") }}')">{{ v.title }}</a>
+                    </h2>
+                    <div class="meta-row">
+                        <p class="channel">{{ v.channel }}</p>
+                        <div class="item-actions">
+                            <button class="lib-btn" onclick="toggleLibrary('{{ v.link | replace("'", "\\'") }}', '{{ v.title | replace("'", "\\'") }}', '{{ v.channel | replace("'", "\\'") }}', '{{ v.thumbnail | replace("'", "\\'") }}')">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <time datetime="{{ v.published_str }}">{{ v.published_str }}</time>
+                </div>
+            </article>
+            {% else %}
+            <p style="text-align:center; margin-top:50px; opacity:0.5;">Nenhum vídeo encontrado ou lista vazia.</p>
+            {% endfor %}
+        </div>
+    </main>
+</div>
+
+<!-- Modal Player -->
+<div id="player-modal" class="player-modal">
+    <div class="player-container">
+        <button id="close-player" class="close-player">&times;</button>
+        <iframe 
+            id="player-iframe" 
+            src="" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen>
+        </iframe>
+    </div>
+</div>
+
+<!-- Settings Panel -->
+<div id="settings-panel" class="settings-panel">
+    <div class="settings-header">
+        <h3>Ajustes do Sistema</h3>
+        <button id="settings-close" class="close-btn">&times;</button>
+    </div>
+    <div class="settings-body">
+        <div class="settings-group">
+            <label class="group-label">Filtros de Conteúdo</label>
+            <div class="setting-row" style="flex-direction: column; align-items: flex-start;">
+                <span>Blacklist de Termos (vírgula)</span>
+                <input type="text" id="pref-blacklist" class="blacklist-input" placeholder="ex: shorts, gameplay, react">
+            </div>
+            <div class="setting-row">
+                <span>Ocultar Live Streams</span>
+                <label class="switch">
+                    <input type="checkbox" id="pref-hide-lives">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        </div>
+        <div class="settings-group">
+            <label class="group-label">Interface (Layout)</label>
+            <div class="setting-row">
+                <span>Densidade Compacta</span>
+                <label class="switch">
+                    <input type="checkbox" id="pref-compact">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+            <div class="setting-row">
+                <span>Barlow Condensed</span>
+                <label class="switch">
+                    <input type="checkbox" id="pref-condensed">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+            <div class="setting-row">
+                <span>Tamanho Thumb</span>
+                <input type="range" id="pref-thumb-size" min="150" max="350" value="246" class="range-slider">
+            </div>
+        </div>
+        <div class="settings-group">
+            <label class="group-label">Estética OLED</label>
+            <div class="setting-row">
+                <span>Opacidade Thumbs</span>
+                <input type="range" id="pref-thumb-opacity" min="20" max="100" value="90" class="range-slider">
+            </div>
+        </div>
+        <div class="settings-group">
+            <label class="group-label">Gerenciamento & Backup</label>
+            <button onclick="exportHistory()" class="action-btn">Exportar Histórico (JSON)</button>
+            <form action="/refresh" method="POST">
+                <button type="submit" class="action-btn secondary">Limpar Cache</button>
+            </form>
+        </div>
+    </div>
+</div>
+<div id="settings-overlay" class="settings-overlay"></div>
+
+<script>
+    const contentArea = document.getElementById('content-area');
+    const viewTitle = document.getElementById('view-title');
+    const loadingOverlay = document.getElementById('loading-overlay');
+    const toggle = document.getElementById('theme-toggle');
+    const settingsToggle = document.getElementById('settings-toggle');
+    const settingsPanel = document.getElementById('settings-panel');
+    const settingsClose = document.getElementById('settings-close');
+    const settingsOverlay = document.getElementById('settings-overlay');
+    const playerModal = document.getElementById('player-modal');
+    const playerIframe = document.getElementById('player-iframe');
+    const closePlayerBtn = document.getElementById('close-player');
+    const body = document.body;
+
+    // AJAX Navigation
+    document.querySelectorAll('.nav-link-ajax').forEach(link => {
+        link.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const target = link.dataset.target;
+            const channel = link.dataset.channel;
+            const url = channel ? `/?channel=${encodeURIComponent(channel)}` : link.getAttribute('href');
+            
+            document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+            link.classList.add('active');
+            
+            loadingOverlay.style.display = 'flex';
+            
+            if (target === 'home') {
+                viewTitle.textContent = channel ? `Canal: ${channel}` : 'Início';
+                const res = await fetch(url);
+                const text = await res.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(text, 'text/html');
+                contentArea.innerHTML = doc.getElementById('content-area').innerHTML;
+                applyFilters();
+            } else if (target === 'channels') {
+                viewTitle.textContent = 'Inscrições';
+                renderChannels();
+            } else if (target === 'history') {
+                viewTitle.textContent = 'Histórico';
+                renderHistory();
+            } else if (target === 'library') {
+                viewTitle.textContent = 'Biblioteca';
+                renderLibrary();
+            }
+            
+            loadingOverlay.style.display = 'none';
+            if (url !== '#' && url !== '/') window.history.pushState({}, '', url);
+        });
+    });
+
+    // Player Logic
+    window.openPlayer = (videoId, title, channel, thumb, link) => {
+        if (!videoId) {
+            window.open(link, '_blank');
+            return;
+        }
+        // Save to history automatically on open
+        saveToHistory({ link, title, channel, thumb, time: new Date().toLocaleString() });
+        
+        const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3`;
+        playerIframe.src = embedUrl;
+        playerModal.classList.add('visible');
+        body.style.overflow = 'hidden';
+    };
+
+    const closePlayer = () => {
+        playerModal.classList.remove('visible');
+        playerIframe.src = '';
+        body.style.overflow = 'auto';
+    };
+
+    closePlayerBtn.addEventListener('click', closePlayer);
+    playerModal.addEventListener('click', (e) => { if (e.target === playerModal) closePlayer(); });
+
+    // History & Library
+    const saveToHistory = (video) => {
+        let history = JSON.parse(localStorage.getItem('yt-history') || '[]');
+        history = [video, ...history.filter(v => v.link !== video.link)].slice(0, 100);
+        localStorage.setItem('yt-history', JSON.stringify(history));
+    };
+
+    window.toggleLibrary = (link, title, channel, thumb) => {
+        let library = JSON.parse(localStorage.getItem('yt-library') || '[]');
+        const exists = library.find(v => v.link === link);
+        if (exists) {
+            library = library.filter(v => v.link !== link);
+        } else {
+            library.push({ link, title, channel, thumb });
+        }
+        localStorage.setItem('yt-library', JSON.stringify(library));
+        if (viewTitle.textContent === 'Biblioteca') renderLibrary();
+    };
+
+    const renderChannels = () => {
+        const channels = Array.from(new Set(Array.from(document.querySelectorAll('.channel-item')).map(i => i.dataset.channel)));
+        contentArea.innerHTML = `<div class="channels-grid">${channels.map(c => `
+            <div class="channel-card-large" onclick="loadChannel('${c.replace("'", "\\'")}')">
+                <div class="channel-avatar-large">${c[0].toUpperCase()}</div>
+                <h3 class="condensed-target">${c}</h3>
+            </div>
+        `).join('')}</div>`;
+        if (document.getElementById('pref-condensed').checked) contentArea.querySelectorAll('.condensed-target').forEach(el => el.classList.add('condensed-text'));
+    };
+
+    window.loadChannel = (name) => {
+        const item = document.querySelector(`.channel-item[data-channel="${name}"]`);
+        if (item) item.click();
+    };
+
+    const renderHistory = () => {
+        const history = JSON.parse(localStorage.getItem('yt-history') || '[]');
+        contentArea.innerHTML = history.length ? history.map(v => renderPartial(v, true)).join('') : '<p style="opacity:0.5; text-align:center;">Histórico vazio.</p>';
+        applyFilters();
+    };
+
+    const renderLibrary = () => {
+        const library = JSON.parse(localStorage.getItem('yt-library') || '[]');
+        contentArea.innerHTML = library.length ? library.map(v => renderPartial(v)).join('') : '<p style="opacity:0.5; text-align:center;">Biblioteca vazia.</p>';
+        applyFilters();
+    };
+
+    const renderPartial = (v, showDate=false) => {
+        const videoId = v.video_id || ''; // We might need to extract ID if not present in saved object
+        return `
+        <article class="item">
+            <div class="thumb-partial" onclick="openPlayer('${videoId}', '${v.title.replace("'", "\\'")}', '${v.channel.replace("'", "\\'")}', '${(v.thumb || v.thumbnail).replace("'", "\\'")}', '${v.link.replace("'", "\\'")}')">
+                <img src="${v.thumb || v.thumbnail}" alt="thumb">
+            </div>
+            <div class="meta">
+                <h2 class="title-partial"><a onclick="openPlayer('${videoId}', '${v.title.replace("'", "\\'")}', '${v.channel.replace("'", "\\'")}', '${(v.thumb || v.thumbnail).replace("'", "\\'")}', '${v.link.replace("'", "\\'")}')" class="condensed-target">${v.title}</a></h2>
+                <p class="channel">${v.channel}</p>
+                ${showDate ? `<time>${v.time}</time>` : ''}
+            </div>
+        </article>
+    `;
+    };
+
+    // Filter & Blacklist Logic
+    const applyFilters = () => {
+        const blacklist = document.getElementById('pref-blacklist').value.split(',').map(s => s.trim().toLowerCase()).filter(s => s);
+        const hideLives = document.getElementById('pref-hide-lives').checked;
+        
+        document.querySelectorAll('.item').forEach(item => {
+            const titleEl = item.querySelector('.title, .title-partial');
+            if (!titleEl) return;
+            const title = titleEl.innerText.toLowerCase();
+            const isLive = title.includes('live') || title.includes('ao vivo');
+            const shouldBlock = blacklist.some(term => title.includes(term));
+            
+            if (shouldBlock || (hideLives && isLive)) {
+                item.classList.add('hidden');
+            } else {
+                item.classList.remove('hidden');
+            }
+        });
+    };
+
+    // Export Logic
+    window.exportHistory = () => {
+        const history = localStorage.getItem('yt-history') || '[]';
+        const blob = new Blob([history], {type: 'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `history_backup_${new Date().toISOString().slice(0,10)}.json`;
+        a.click();
+    };
+
+    // Theme & Settings Logic
+    if (localStorage.getItem('theme') === 'light') { body.classList.add('light-mode'); toggle.textContent = '☀️'; }
+    toggle.addEventListener('click', () => {
+        body.classList.toggle('light-mode');
+        const isLight = body.classList.contains('light-mode');
+        localStorage.setItem('theme', isLight ? 'light' : 'dark');
+        toggle.textContent = isLight ? '☀️' : '🌙';
+    });
+
+    settingsToggle.addEventListener('click', () => { settingsPanel.classList.add('open'); settingsOverlay.classList.add('visible'); });
+    const closeSettings = () => { settingsPanel.classList.remove('open'); settingsOverlay.classList.remove('visible'); };
+    settingsClose.addEventListener('click', closeSettings);
+    settingsOverlay.addEventListener('click', closeSettings);
+
+    const prefs = { 
+        compact: document.getElementById('pref-compact'), 
+        condensed: document.getElementById('pref-condensed'),
+        thumbSize: document.getElementById('pref-thumb-size'), 
+        thumbOpacity: document.getElementById('pref-thumb-opacity'),
+        blacklist: document.getElementById('pref-blacklist'),
+        hideLives: document.getElementById('pref-hide-lives')
+    };
+
+    const applyPrefs = () => {
+        // Layout
+        if (prefs.compact.checked) body.classList.add('compact-mode'); else body.classList.remove('compact-mode');
+        if (prefs.condensed.checked) {
+            document.querySelectorAll('.title, .title-partial, .condensed-target').forEach(el => el.classList.add('condensed-text'));
+        } else {
+            document.querySelectorAll('.title, .title-partial, .condensed-target').forEach(el => el.classList.remove('condensed-text'));
+        }
+        
+        // Vars
+        document.documentElement.style.setProperty('--thumb-width', prefs.thumbSize.value + 'px');
+        document.documentElement.style.setProperty('--thumb-opacity', prefs.thumbOpacity.value / 100);
+        
+        // Filter
+        applyFilters();
+
+        // Save
+        const data = {};
+        Object.keys(prefs).forEach(k => data[k] = prefs[k].type === 'checkbox' ? prefs[k].checked : prefs[k].value);
+        localStorage.setItem('yt-prefs-v2', JSON.stringify(data));
+    };
+
+    const savedPrefs = JSON.parse(localStorage.getItem('yt-prefs-v2') || '{}');
+    if (savedPrefs.compact !== undefined) {
+        Object.keys(prefs).forEach(k => {
+            if (savedPrefs[k] !== undefined) {
+                if (prefs[k].type === 'checkbox') prefs[k].checked = savedPrefs[k];
+                else prefs[k].value = savedPrefs[k];
+            }
+        });
+        applyPrefs();
+    }
+
+    Object.values(prefs).forEach(input => input.addEventListener('input', applyPrefs));
+    
+    // Initial load
+    applyFilters();
+</script>
+</body>
+</html>

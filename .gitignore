@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Vercel
+.vercel
+
+# Project specific
+subscription_manager.xml
+SUBSCRIPTION_MANAGER_HISTORY.json
+
+# IDE
+.vscode/
+.idea/
+.DS_Store
