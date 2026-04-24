@@ -9,6 +9,9 @@ class Antigravity:
         template_path = os.path.join(os.getcwd(), 'templates')
         self.app = Flask(__name__, static_folder=static_path, template_folder=template_path)
 
+    def __call__(self, environ, start_response):
+        return self.app(environ, start_response)
+
     def route(self, rule, methods=None):
         # Proxy Flask's route decorator
         return self.app.route(rule, methods=methods)
