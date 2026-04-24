@@ -19,9 +19,9 @@ CATEGORY_FILTERS = {
 def add_security_headers(response):
     csp = (
         "default-src 'self'; "
-        "script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; "
-        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; "
-        "font-src 'self' https://fonts.gstatic.com; "
+        "script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.youtube.com https://s.ytimg.com; "
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://www.gstatic.com; "
+        "font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; "
         "img-src 'self' data: https://*.youtube.com https://*.ytimg.com https://*.ggpht.com https://www.gstatic.com; "
         "frame-src https://www.youtube-nocookie.com; "
         "connect-src 'self';"
