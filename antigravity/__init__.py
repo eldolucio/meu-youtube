@@ -3,10 +3,10 @@ from flask import Flask, render_template as _render_template, request as _reques
 
 class Antigravity:
     def __init__(self):
-        # Flask app uses the current working directory for templates/static
-                # Use absolute paths for static and template folders relative to the current working directory
-        static_path = os.path.join(os.getcwd(), 'static')
-        template_path = os.path.join(os.getcwd(), 'templates')
+        # Use absolute paths relative to the project root (one level up from this file)
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        static_path = os.path.join(base_dir, 'static')
+        template_path = os.path.join(base_dir, 'templates')
         self.app = Flask(__name__, static_folder=static_path, template_folder=template_path)
 
     def __call__(self, environ, start_response):
