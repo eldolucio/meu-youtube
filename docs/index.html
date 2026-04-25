@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DEMO | meu youtube industrial</title>
+    <title>SHOWCASE | meu youtube industrial</title>
     <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="favicon.png">
     <style>
@@ -19,89 +19,180 @@
             --yt-logo-red: #ff0000;
             --yt-hover: #121212;
             --thumb-width: 246px;
-            --thumb-opacity: 0.9;
+        }
+        .light-mode {
+            --yt-main-bg: #f5f5f5;
+            --yt-sidebar-bg: #ffffff;
+            --yt-card-bg: #ffffff;
+            --yt-border: #e0e0e0;
+            --yt-text: #1a1a1a;
+            --yt-text-secondary: #666;
+            --yt-hover: #f0f0f0;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background-color: var(--yt-main-bg); color: var(--yt-text); font-family: var(--font-main); overflow-x: hidden; }
-        .yt-header { height: 56px; background: var(--yt-sidebar-bg); border-bottom: 1px solid var(--yt-border); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; position: sticky; top: 0; z-index: 1000; }
+        body { background-color: var(--yt-main-bg); color: var(--yt-text); font-family: var(--font-main); transition: all 0.3s ease; }
+        
+        header.yt-header { 
+            height: 56px; background: var(--yt-sidebar-bg); border-bottom: 1px solid var(--yt-border); 
+            display: flex; align-items: center; justify-content: space-between; padding: 0 16px; 
+            position: sticky; top: 0; z-index: 1000; 
+        }
         .my-logo { font-size: 20px; font-weight: 700; letter-spacing: -1px; color: var(--yt-text); display: flex; align-items: center; text-decoration: none; }
         .my-logo span { background-color: var(--yt-logo-red); color: #ffffff; padding: 2px 6px; border-radius: 4px; margin-left: 4px; font-weight: 800; }
+        
+        .search-mock { flex: 0 1 500px; display: flex; position: relative; }
+        .search-mock input { width: 100%; padding: 8px 16px; background: #080808; border: 1px solid var(--yt-border); color: #fff; outline: none; }
+        .search-mock button { background: #222; border: 1px solid var(--yt-border); border-left: none; padding: 0 20px; cursor: pointer; color: #fff; }
+
         .app-container { display: flex; min-height: calc(100vh - 56px); }
-        .sidebar { width: 240px; background-color: var(--yt-sidebar-bg); border-right: 1px solid var(--yt-border); height: calc(100vh - 56px); position: sticky; top: 56px; padding-top: 12px; }
-        .sidebar-item { display: flex; align-items: center; padding: 0 24px; height: 40px; text-decoration: none; color: var(--yt-text); font-size: 14px; transition: background 0.2s; border-left: 3px solid transparent; }
-        .sidebar-item:hover { background: #1a1a1a; border-left-color: var(--yt-accent); }
-        .sidebar-item.active { background: #1a1a1a; border-left-color: var(--yt-accent); font-weight: 600; color: var(--yt-accent); }
+        nav.sidebar { width: 240px; background-color: var(--yt-sidebar-bg); border-right: 1px solid var(--yt-border); height: calc(100vh - 56px); position: sticky; top: 56px; overflow-y: auto; padding-top: 12px; }
+        .sidebar-item { 
+            display: flex; align-items: center; padding: 0 24px; height: 40px; text-decoration: none; 
+            color: var(--yt-text); font-size: 14px; transition: background 0.2s; border-left: 3px solid transparent; 
+            background: none; border: none; width: 100%; cursor: pointer; text-align: left;
+        }
+        .sidebar-item:hover { background: var(--yt-hover); border-left-color: var(--yt-accent); }
+        .sidebar-item.active { background: var(--yt-hover); border-left-color: var(--yt-accent); font-weight: 600; color: var(--yt-accent); }
         .sidebar-title { padding: 24px 24px 8px; font-size: 11px; text-transform: uppercase; color: var(--yt-text-secondary); font-weight: 700; letter-spacing: 1px; }
-        .list { flex: 1; max-width: 1000px; margin: 30px auto; padding: 0 40px; }
+
+        main.list { flex: 1; max-width: 1000px; margin: 30px auto; padding: 0 40px; }
         .item { display: flex; padding: 16px 0; border-bottom: 1px solid var(--yt-border); }
-        .thumb img { width: var(--thumb-width); aspect-ratio: 16/9; object-fit: cover; border: 1px solid var(--yt-border); opacity: var(--thumb-opacity); transition: opacity 0.3s; }
+        .thumb { cursor: pointer; position: relative; flex-shrink: 0; }
+        .thumb img { width: var(--thumb-width); aspect-ratio: 16/9; object-fit: cover; border: 1px solid var(--yt-border); transition: opacity 0.3s; opacity: 0.9; }
         .item:hover .thumb img { opacity: 1; }
+        
         .meta { margin-left: 16px; flex: 1; }
-        .title { color: var(--yt-text); font-size: 18px; font-weight: 600; text-decoration: none; margin-bottom: 8px; display: block; }
+        .title-btn { 
+            display: block; color: var(--yt-text); font-size: 18px; font-weight: 600; 
+            text-decoration: none; margin-bottom: 8px; background: none; border: none; 
+            cursor: pointer; text-align: left; line-height: 1.2;
+        }
+        .title-btn:hover { color: var(--yt-accent); }
         .channel { font-size: 13px; color: var(--yt-text-secondary); }
-        .demo-badge { background: var(--yt-accent); color: #000; padding: 15px; border-radius: 4px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; font-weight: 700; text-transform: uppercase; font-size: 12px; }
-        .live-btn { background: #000; color: var(--yt-accent); padding: 8px 16px; border-radius: 4px; text-decoration: none; border: 1px solid var(--yt-accent); transition: all 0.3s; }
-        .live-btn:hover { background: var(--yt-accent); color: #000; }
+
+        .demo-announcement { 
+            background: rgba(200, 241, 53, 0.05); border: 1px dashed var(--yt-accent); 
+            padding: 20px; border-radius: 4px; margin-bottom: 40px; color: var(--yt-accent);
+            display: flex; justify-content: space-between; align-items: center; 
+        }
+        .live-btn { font-weight: 900; color: #000; background: var(--yt-accent); padding: 10px 20px; text-decoration: none; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* PLAYER MODAL SIMULATION */
+        .modal { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.95); z-index: 5000; display: none; 
+            align-items: center; justify-content: center; 
+        }
+        .modal-content { width: 90%; max-width: 900px; aspect-ratio: 16/9; background: #000; position: relative; border: 2px solid var(--yt-accent); }
+        .close-modal { position: absolute; top: -50px; right: 0; color: #fff; background: none; border: none; font-size: 40px; cursor: pointer; }
+
+        .header-actions { display: flex; align-items: center; gap: 20px; }
+        .theme-toggle { background: none; border: none; color: var(--yt-text-secondary); cursor: pointer; font-size: 20px; }
     </style>
 </head>
 <body>
+
     <header class="yt-header">
         <a href="#" class="my-logo">meu <span>youtube</span></a>
-        <div style="font-size: 10px; color: var(--yt-accent); text-transform: uppercase; letter-spacing: 2px;">MODO DEMO ESTÁTICO</div>
+        <div class="search-mock">
+            <input type="text" placeholder="Pesquisar canal na demo...">
+            <button type="button">🔍</button>
+        </div>
+        <div class="header-actions">
+            <button class="theme-toggle" id="theme-btn">🌙</button>
+            <a href="https://meu-youtube-eight.vercel.app/" target="_blank" class="live-btn" style="font-size: 11px;">VER LIVE 🛰️</a>
+        </div>
     </header>
 
     <div class="app-container">
-        <aside class="sidebar">
-            <a href="#" class="sidebar-item active">Início</a>
-            <a href="#" class="sidebar-item">Histórico</a>
-            <a href="#" class="sidebar-item">Biblioteca</a>
-            <div class="sidebar-title">CANAL DEMO</div>
-            <a href="#" class="sidebar-item">Papo de Nerd</a>
-            <a href="https://meu-youtube-eight.vercel.app/sobre" class="sidebar-item" style="margin-top: 50px; opacity: 0.5;">Sobre o Autor</a>
-        </aside>
+        <nav class="sidebar">
+            <button class="sidebar-item active">Início</button>
+            <button class="sidebar-item">Histórico</button>
+            <button class="sidebar-item">Biblioteca</button>
+            <h3 class="sidebar-title">Demonstração</h3>
+            <button class="sidebar-item">Papo de Nerd</button>
+            <a href="https://meu-youtube-eight.vercel.app/sobre" class="sidebar-item" style="margin-top: 50px; opacity: 0.5; text-decoration: none;">Sobre o Autor</a>
+        </nav>
 
         <main class="list">
-            <div class="demo-badge">
-                <span>Esta é uma Vitrine Estática para o GitHub.</span>
-                <a href="https://meu-youtube-eight.vercel.app/" target="_blank" class="live-btn">VER VERSÃO LIVE 🛰️</a>
-            </div>
+            <section class="demo-announcement">
+                <div>
+                    <strong style="display: block; font-size: 16px;">Vitrime Estática HTML5</strong>
+                    <p style="font-size: 13px; margin-top: 5px; opacity: 0.7;">Esta é uma demonstração de design. Para usar o app real, clique no botão ao lado.</p>
+                </div>
+                <a href="https://meu-youtube-eight.vercel.app/" target="_blank" class="live-btn">ACESSAR APP 🦾</a>
+            </section>
 
             <article class="item">
-                <div class="thumb"><img src="https://img.youtube.com/vi/qV70V2v7X0I/mqdefault.jpg"></div>
+                <div class="thumb" onclick="openDemo('qV70V2v7X0I')"><img src="https://img.youtube.com/vi/qV70V2v7X0I/mqdefault.jpg" alt="thumb"></div>
                 <div class="meta">
-                    <a href="#" class="title">Manifesto da Independência Digital: O Retorno</a>
+                    <button class="title-btn" onclick="openDemo('qV70V2v7X0I')">Manifesto da Independência Digital: O Fim dos Algoritmos</button>
                     <p class="channel">Papo de Nerd</p>
-                    <p style="font-size: 11px; opacity: 0.4; margin-top: 5px;">2 horas atrás</p>
+                    <time style="font-size: 11px; opacity: 0.4; display: block; margin-top: 5px;">2 horas atrás</time>
                 </div>
             </article>
 
             <article class="item">
-                <div class="thumb"><img src="https://img.youtube.com/vi/5qap5aO4i9A/mqdefault.jpg"></div>
+                <div class="thumb" onclick="openDemo('5qap5aO4i9A')"><img src="https://img.youtube.com/vi/5qap5aO4i9A/mqdefault.jpg" alt="thumb"></div>
                 <div class="meta">
-                    <a href="#" class="title">Arquitetura OLED: Por que o Preto Absoluto Importa</a>
-                    <p class="channel">Design Industrial Lab</p>
-                    <p style="font-size: 11px; opacity: 0.4; margin-top: 5px;">5 horas atrás</p>
+                    <button class="title-btn" onclick="openDemo('5qap5aO4i9A')">O Poder do Preto Absoluto: Design Industrial em Telas OLED</button>
+                    <p class="channel">Brutalism Design Lab</p>
+                    <time style="font-size: 11px; opacity: 0.4; display: block; margin-top: 5px;">5 horas atrás</time>
                 </div>
             </article>
 
             <article class="item">
-                <div class="thumb"><img src="https://img.youtube.com/vi/ScMzIvxBSi4/mqdefault.jpg"></div>
+                <div class="thumb" onclick="openDemo('ScMzIvxBSi4')"><img src="https://img.youtube.com/vi/ScMzIvxBSi4/mqdefault.jpg" alt="thumb"></div>
                 <div class="meta">
-                    <a href="#" class="title">Como Hackear sua Produtividade no YouTube</a>
-                    <p class="channel">Focus Systems</p>
-                    <p style="font-size: 11px; opacity: 0.4; margin-top: 5px;">1 dia atrás</p>
+                    <button class="title-btn" onclick="openDemo('ScMzIvxBSi4')">Produtividade Hacker: Como Retomar o Controle do seu Tempo</button>
+                    <p class="channel">Deep Systems</p>
+                    <time style="font-size: 11px; opacity: 0.4; display: block; margin-top: 5px;">1 dia atrás</time>
                 </div>
             </article>
 
             <article class="item">
-                <div class="thumb"><img src="https://img.youtube.com/vi/9_o9I8pBfio/mqdefault.jpg"></div>
+                <div class="thumb" onclick="openDemo('eR5VjC_kG9M')"><img src="https://img.youtube.com/vi/eR5VjC_kG9M/mqdefault.jpg" alt="thumb"></div>
                 <div class="meta">
-                    <a href="#" class="title">Minimalismo Brutalista na Web Moderna</a>
-                    <p class="channel">Independence Code</p>
-                    <p style="font-size: 11px; opacity: 0.4; margin-top: 5px;">3 dias atrás</p>
+                    <button class="title-btn" onclick="openDemo('eR5VjC_kG9M')">Configurando seu Workspace para Foco Total</button>
+                    <p class="channel">Minimalist Dev</p>
+                    <time style="font-size: 11px; opacity: 0.4; display: block; margin-top: 5px;">3 dias atrás</time>
                 </div>
             </article>
         </main>
     </div>
+
+    <!-- MOCK PLAYER -->
+    <div id="demo-modal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeDemo()">×</button>
+            <iframe id="demo-iframe" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <script>
+        function openDemo(id) {
+            const modal = document.getElementById('demo-modal');
+            const iframe = document.getElementById('demo-iframe');
+            iframe.src = `https://www.youtube.com/embed/${id}?autoplay=1`;
+            iframe.style.width = '100%';
+            iframe.style.height = '100%';
+            modal.style.display = 'flex';
+        }
+        function closeDemo() {
+            document.getElementById('demo-modal').style.display = 'none';
+            document.getElementById('demo-iframe').src = '';
+        }
+        document.getElementById('theme-btn').addEventListener('click', function() {
+            document.body.classList.toggle('light-mode');
+            this.textContent = document.body.classList.contains('light-mode') ? '☀️' : '🌙';
+        });
+        // Mock sidebar selection
+        document.querySelectorAll('.sidebar-item').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
 </body>
 </html>
