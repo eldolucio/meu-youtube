@@ -142,3 +142,34 @@ Esta versão no GitHub Pages é uma **demonstração interativa**. Você pode ex
 
 **Tecnologias**: Python (Flask), Docker, SQLite, HTML5 Semântico, CSS Industrial, JavaScript.
 **Desenvolvido para Máxima Produtividade.** 🌑⚙️📈
+
+---
+
+## 🛑 Troubleshooting (Erros Comuns e Soluções)
+
+Durante o desenvolvimento e testes exaustivos em diversas arquiteturas (Windows, Mac e Máquinas Virtuais Linux ARM64), documentamos as soluções para os erros de ambiente mais comuns:
+
+### 1. Erro C++ no Windows (ARM64)
+**Erro:** `Microsoft Visual C++ 14.0 or greater is required` durante a instalação das dependências (pip install).
+**Causa:** Falta de compiladores para pacotes C (como antigas versões do Postgres ou leitores XML) em processadores ARM.
+**Solução Resolvida:** Adaptamos o `requirements.txt` para instalar o adaptador Postgres (`psycopg2`) apenas em servidores Linux de produção, mantendo o banco SQLite nativo e blindado para uso local.
+
+### 2. GPG Key Error no Debian/Ubuntu
+**Erro:** O comando trava no início com `The following signatures couldn't be verified...` (Geralmente repositórios Mozilla/Firefox).
+**Causa:** Chaves de segurança de repositórios de terceiros vencidas no Linux.
+**Solução:** Nossos scripts "One-Liner" agora utilizam `;` em vez de `&&` após o `apt update` para ignorar esses falsos-positivos e continuar a instalação. Se quiser limpar o erro do seu Linux, rode: `sudo rm -f /etc/apt/sources.list.d/*.list && sudo apt update`.
+
+### 3. "The connection was reset" no Docker
+**Erro:** O container sobe, a porta 5005 fica aberta, mas o navegador não carrega a página.
+**Causa 1 (Bind de IP):** O Flask estava restrito ao localhost interno do container. Foi corrigido mudando a escuta para `0.0.0.0`.
+**Causa 2 (Bug do SQLite no Docker):** Mapear um banco SQLite como um volume nomeado no `docker-compose` faz o Docker criar uma **pasta** com o nome do arquivo, causando crash fatal no Python. Removido o mapeamento isolado; o banco agora persiste nativamente no volume `/app`.
+
+### 4. Permissão Negada ao Deletar a Pasta (rm -rf)
+**Erro:** `rm: cannot remove '__pycache__': Permission denied` seguido de erro no `git clone`.
+**Causa:** Quando rodado via Docker, o Python dentro do container (usuário Root) compila arquivos de cache (`.pyc`). Ao tentar deletar a pasta como um usuário comum, o sistema bloqueia.
+**Solução Resolvida:** Os comandos de instalação rápida agora utilizam `sudo rm -rf` por padrão para obliterar vestígios de instalações anteriores.
+
+### 5. "Address already in use" (Porta 5005 Ocupada)
+**Erro:** O Python avisa que a porta 5005 já está em uso por outro programa.
+**Causa:** Existe um container Docker "fantasma" rodando em segundo plano (`-d`) de uma tentativa anterior, ou outro processo do Python.
+**Solução:** Mate o processo travado rodando: `sudo docker rm -f meu-youtube-v2` e rode o aplicativo novamente.
