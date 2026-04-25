@@ -165,11 +165,11 @@ def upload():
             clear_cache()
     return redirect("/")
 
-@antigravity_app.route("/sobre")
+@app.route("/sobre")
 def sobre():
     return render_template("sobre.html")
 
-@antigravity_app.route("/help")
+@app.route("/help")
 def help_page():
     profile = get_active_profile()
     channels = get_channel_metadata()
