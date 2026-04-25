@@ -58,10 +58,10 @@ Se preferir não utilizar o Docker, você pode rodar o projeto diretamente com P
 Se você **não tem o Python instalado** e quer instalar tudo automaticamente de uma só vez (Python, dependências e iniciar o servidor), abra o **PowerShell** e rode o comando abaixo:
 
 ```powershell
-cd ~ ; winget install -e --id Python.Python.3.11 --accept-source-agreements --accept-package-agreements ; $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") ; git clone https://github.com/eldolucio/meu-youtube.git ; cd meu-youtube ; python -m venv venv ; .\venv\Scripts\python.exe -m pip install -r requirements.txt ; .\venv\Scripts\python.exe app.py
+cd ~ ; Remove-Item -Recurse -Force .\venv -ErrorAction SilentlyContinue ; Remove-Item -Recurse -Force meu-youtube -ErrorAction SilentlyContinue ; winget install -e --id Git.Git --accept-source-agreements --accept-package-agreements ; winget install -e --id Python.Python.3.11 --accept-source-agreements --accept-package-agreements ; $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") ; git clone https://github.com/eldolucio/meu-youtube.git ; cd meu-youtube ; python -m venv venv ; .\venv\Scripts\python.exe -m pip install -r requirements.txt ; .\venv\Scripts\python.exe app.py
 ```
 
-> **Nota:** Esse comando muda para a sua pasta de usuário (`cd ~`), instala o Python via `winget`, baixa o projeto, instala tudo de forma segura (sem erros de script bloqueado) e já inicia!
+> **Nota:** Esse comando limpa arquivos antigos (`Remove-Item`), muda para sua pasta de usuário (`cd ~`), instala o Git e o Python via `winget`, baixa o projeto, instala as dependências de forma segura (sem erros de permissão) e já inicia!
 
 ### Instalação Rápida (One-Liner)
 
