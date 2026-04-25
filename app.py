@@ -165,9 +165,9 @@ def upload():
             clear_cache()
     return redirect("/")
 
-@antigravity_app.route("/sobre-2016")
-def sobre_2016():
-    return render_template("sobre_2016.html")
+@antigravity_app.route("/sobre")
+def sobre():
+    return render_template("sobre.html")
 
 @antigravity_app.route("/help")
 def help_page():
