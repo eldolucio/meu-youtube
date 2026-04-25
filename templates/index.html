@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Feed de Subscrições YouTube</title>
     <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=2.2.1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -74,9 +75,9 @@
                 <svg viewBox="0 0 24 24" width="24" height="24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12l5-3-5-3v6z" fill="currentColor"/></svg>
                 <span>Biblioteca</span>
             </a>
-            <a href="/channels" class="sidebar-item nav-link-ajax" data-target="channels">
-                <svg viewBox="0 0 24 24" width="24" height="24"><path d="M18.7 8.7l-1.4-1.4-7.3 7.3-3.3-3.3-1.4 1.4 4.7 4.7z" fill="currentColor"/></svg>
-                <span>Inscrições</span>
+            <a href="/help" class="sidebar-item nav-link-ajax" data-target="help">
+                <svg viewBox="0 0 24 24" width="24" height="24"><path d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z" fill="currentColor"/></svg>
+                <span>Ajuda</span>
             </a>
         </nav>
 
@@ -125,17 +126,17 @@
         <div id="content-area">
             {% for v in videos %}
             <article class="item" data-id="{{ v.link }}">
-                <div class="thumb" onclick="openPlayer('{{ v.video_id }}', '{{ v.title | replace("'", "\\'") }}', '{{ v.channel | replace("'", "\\'") }}', '{{ v.thumbnail | replace("'", "\\'") }}', '{{ v.link | replace("'", "\\'") }}')">
+                <div class="thumb" onclick='openPlayer({{ v.video_id | tojson }}, {{ v.title | tojson }}, {{ v.channel | tojson }}, {{ v.thumbnail | tojson }}, {{ v.link | tojson }})'>
                     <img src="{{ v.thumbnail }}" alt="thumbnail" loading="lazy">
                 </div>
                 <div class="meta">
                     <h2 class="title">
-                        <a onclick="openPlayer({{ v.video_id | tojson }}, {{ v.title | tojson }}, {{ v.channel | tojson }}, {{ v.thumbnail | tojson }}, {{ v.link | tojson }})">{{ v.title }}</a>
+                        <a onclick='openPlayer({{ v.video_id | tojson }}, {{ v.title | tojson }}, {{ v.channel | tojson }}, {{ v.thumbnail | tojson }}, {{ v.link | tojson }})'>{{ v.title }}</a>
                     </h2>
                     <div class="meta-row">
                         <p class="channel">{{ v.channel }}</p>
                         <div class="item-actions">
-                            <button class="lib-btn" onclick="toggleLibrary('{{ v.link | replace("'", "\\'") }}', '{{ v.title | replace("'", "\\'") }}', '{{ v.channel | replace("'", "\\'") }}', '{{ v.thumbnail | replace("'", "\\'") }}')">
+                            <button class="lib-btn" onclick='toggleLibrary({{ v.link | tojson }}, {{ v.title | tojson }}, {{ v.channel | tojson }}, {{ v.thumbnail | tojson }})'>
                                 <i class="far fa-heart"></i>
                             </button>
                         </div>

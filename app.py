@@ -165,9 +165,15 @@ def upload():
             clear_cache()
     return redirect("/")
 
-@app.route("/sobre-2016")
+@antigravity_app.route("/sobre-2016")
 def sobre_2016():
     return render_template("sobre_2016.html")
+
+@antigravity_app.route("/help")
+def help_page():
+    profile = get_active_profile()
+    channels = get_channel_metadata()
+    return render_template("help.html", profile=profile, channels=channels, request=request)
 
 # Create a handler for Vercel
 app_handler = app
