@@ -20,12 +20,23 @@
     </section>
 
     <section class="help-section" style="margin-bottom: 40px;">
-        <h2 style="border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 15px;">📂 Importação de Canais</h2>
-        <p style="color: var(--yt-text-secondary); line-height: 1.6;">Vá em <strong>Inscrições</strong> para carregar seus canais. Suportamos:</p>
-        <ul style="list-style: none; margin-top: 10px;">
-            <li style="margin-bottom: 8px;">• Arquivo <code>subscriptions.csv</code> (exportado do Google Takeout).</li>
-            <li style="margin-bottom: 8px;">• Arquivo <code>subscription_manager.xml</code> (Formato OPML padrão).</li>
-        </ul>
+        <h2 style="border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 15px;">📂 Importação de Canais (Passo a Passo)</h2>
+        <p style="color: var(--yt-text-secondary); line-height: 1.6; margin-bottom: 15px;">Siga estas etapas para migrar suas inscrições do YouTube oficial para o seu Dashboard Industrial:</p>
+        
+        <div style="background: rgba(255,255,255,0.03); border-left: 3px solid var(--yt-accent); padding: 20px; margin-bottom: 20px;">
+            <ol style="color: var(--yt-text-secondary); line-height: 1.8; font-size: 14px;">
+                <li style="margin-bottom: 10px;">Acesse o <a href="https://takeout.google.com/" target="_blank" style="color: var(--yt-accent); text-decoration: none;">Google Takeout</a>.</li>
+                <li style="margin-bottom: 10px;">Clique em <strong>"Desmarcar tudo"</strong>.</li>
+                <li style="margin-bottom: 10px;">Role até o fim e marque apenas <strong>"YouTube e YouTube Music"</strong>.</li>
+                <li style="margin-bottom: 10px;">Clique no botão <strong>"Todos os dados do YouTube incluídos"</strong> e marque APENAS <strong>"subscriptions"</strong>.</li>
+                <li style="margin-bottom: 10px;">Avance, clique em <strong>"Criar exportação"</strong> e aguarde o e-mail do Google.</li>
+                <li style="margin-bottom: 10px;">Baixe e extraia o arquivo ZIP enviado.</li>
+                <li style="margin-bottom: 10px;">Localize o arquivo: <code>YouTube/subscriptions/subscriptions.csv</code>.</li>
+                <li style="margin-bottom: 10px;">No seu Dashboard, clique em <strong>"IMPORTAR ARQUIVO"</strong> na barra lateral e selecione esse arquivo CSV.</li>
+            </ol>
+        </div>
+        
+        <p style="font-size: 13px; color: #888;">💡 <em>O sistema também aceita o arquivo XML (OPML) exportado de outros gerenciadores de RSS.</em></p>
     </section>
 
     <section class="help-section" style="margin-bottom: 40px;">
