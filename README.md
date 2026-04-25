@@ -1,5 +1,9 @@
-# meu **youtube** 🌑 v2.2
-> O seu dock de monitoramento ultra-rápido, livre de distrações e focado em alta performance (2026).
+# meu **youtube** 🌑 v2.5.0
+> O seu dock de monitoramento industrial ultra-rápido, livre de distrações e focado em alta performance.
+
+[![Live Demo (Vercel)](https://img.shields.io/badge/Live_App-Vercel-black?style=for-the-badge&logo=vercel)](https://meu-youtube-eight.vercel.app/)
+[![Static Showcase (GitHub)](https://img.shields.io/badge/Showcase-GitHub_Pages-lime?style=for-the-badge&logo=github)](https://eldolucio.github.io/meu-youtube/)
+[![Manifesto](https://img.shields.io/badge/Manifesto-Independência_Digital-white?style=for-the-badge)](https://meu-youtube-eight.vercel.app/sobre)
 
 ![Preview do Dashboard](screenshot.png)
 
@@ -11,53 +15,44 @@ Ele elimina anúncios, shorts e recomendações viciantes, entregando um feed pu
 
 ---
 
-## 🚀 Novas Funcionalidades (v2.2)
+## 🚀 Novas Funcionalidades (v2.5.0)
 
-### 🌓 Monitor de Edição (Auto-Refresh)
-O dashboard agora conta com um **Auto-Refresh Assíncrono**. Uma linha de progresso finíssima no topo indica a próxima varredura de vídeos. Ele atualiza seu feed em segundo plano sem interromper o que você está assistindo no player. Ideal para deixar um monitor de lado enquanto você trabalha em outra tela.
+### 🌓 Monitor de Edição (Auto-Refresh Pandora)
+O dashboard conta com um **Auto-Refresh Assíncrono**. Uma linha de progresso finíssima no topo indica a próxima varredura de vídeos. Ele atualiza seu feed em segundo plano sem interromper o que você está assistindo no player.
 
 ### 👤 Gestão Multi-Perfil & Segurança
-Agora a casa inteira pode usar! Implementamos uma gestão completa de perfis baseada em idade:
+Agora a casa inteira pode usar! Implementamos uma gestão completa de perfis baseada em idade com persistência em PostgreSQL:
 - **Adulto (18+)**: Acesso total, focado em monitoramento profissional.
 - **Adolescente**: Filtros de conteúdo moderados.
-- **Criança**: Filtro restritivo automático (remove vídeos de política, violência, etc).
-*Cada perfil tem seu próprio histórico e biblioteca de vídeos salvos.*
+- **Criança**: Filtro restritivo automático.
 
-### 🎨 Estética Industrial OLED
-Fundo em **#000000** real, tipografia **Barlow Condensed** e acentos em **Verde Limão Neon**. O dashboard foi desenhado para ser esteticamente premium e economizar energia em telas OLED.
+### 🎨 Estética Industrial OLED & Manifesto
+Fundo em **#000000** real, tipografia **Barlow 900** e acentos em **Verde Limão**. O projeto inclui um **Manifesto Autoral** que explica a filosofia por trás da ferramenta.
 
 ---
 
-## 🛠️ Como usar (Guia Rápido 2026)
+## 🛠️ Como usar (Guia Rápido)
 
 ### 1. Traga seus inscritos (Google Takeout)
-O YouTube agora usa o formato CSV. Veja como importar:
 1. Vá ao **[Google Takeout](https://takeout.google.com/)**, marque apenas **YouTube** e selecione a pasta **subscriptions**.
 2. Baixe o arquivo **`subscriptions.csv`**.
 3. No dashboard, abra a **Engrenagem ⚙️** e faça o upload.
 
 ### 2. Configure seu Perfil
-Ao entrar pela primeira vez, crie seu perfil. Se quiser gerenciar outros usuários ou trocar de conta, clique no seu nome na barra lateral ou vá em **Gerenciar Usuários** nas configurações.
+Ao entrar pela primeira vez, crie seu perfil. Você pode gerenciar vários usuários e alternar entre eles instantaneamente.
 
 ---
 
 ## 📦 Instalação e Deploy
 
 **Deploy na Vercel (Recomendado)**:
-Conecte este repositório e clique em Deploy. O sistema já está configurado para o ambiente Vercel.
+Conecte este repositório e configure a variável de ambiente `POSTGRES_URL`.
 
 **Rodando Localmente**:
 1. Instale: `pip install -r requirements.txt`
-2. Execute: `python app.py` (Porta padrão: `5005`)
-
-**Rodando via Docker (Recomendado)**:
-Se você tem o Docker instalado, pode subir o dashboard com um único comando:
-```bash
-docker-compose up -d --build
-```
-Isso criará o container e manterá seus perfis salvos permanentemente.
+2. Execute: `python app.py`
 
 ---
 
-**Tecnologias**: Python (Flask/Antigravity), SQLite (Perfis), AJAX/Fetch (SPA), CSS Modular Industrial.
+**Tecnologias**: Python (Flask), Vercel Postgres, AJAX SPA Architecture, OLED Industrial Design.
 **Desenvolvido para Máxima Produtividade.** 🌑⚙️📈
