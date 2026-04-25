@@ -40,7 +40,7 @@ A versão completa com sincronização RSS e banco de dados está disponível ne
 Se você estiver rodando um servidor ou máquina virtual Linux (Ubuntu/Debian) do zero, pode rodar o super-comando abaixo. Ele instala o Docker automaticamente, baixa o código, sobe os containers e já abre o navegador:
 
 ```bash
-cd ~ ; sudo apt update ; sudo apt install -y curl git python3 ; curl -fsSL https://get.docker.com | sudo sh ; rm -rf meu-youtube ; git clone https://github.com/eldolucio/meu-youtube.git ; cd meu-youtube ; sudo docker compose up -d --build ; python3 -c "import webbrowser, time; time.sleep(2); webbrowser.open('http://127.0.0.1:5005')"
+cd ~ ; sudo apt update ; sudo apt install -y curl git python3 ; curl -fsSL https://get.docker.com | sudo sh ; sudo rm -rf meu-youtube ; git clone https://github.com/eldolucio/meu-youtube.git ; cd meu-youtube ; sudo docker compose up -d --build ; python3 -c "import webbrowser, time; time.sleep(2); webbrowser.open('http://127.0.0.1:5005')"
 ```
 
 ### Instalação Passo a Passo (Windows, Mac e Linux)
@@ -79,7 +79,7 @@ cd ~ && rm -rf venv meu-youtube && git clone https://github.com/eldolucio/meu-yo
 
 **No Linux - Ubuntu/Debian (Bash):**
 ```bash
-cd ~ && rm -rf venv meu-youtube ; sudo apt update ; sudo apt install -y git python3 python3-venv python3-pip && git clone https://github.com/eldolucio/meu-youtube.git && cd meu-youtube && python3 -m venv venv && source venv/bin/activate && pip3 install -r requirements.txt && python3 app.py
+cd ~ ; sudo rm -rf venv meu-youtube ; sudo apt update ; sudo apt install -y git python3 python3-venv python3-pip ; git clone https://github.com/eldolucio/meu-youtube.git ; cd meu-youtube ; python3 -m venv venv ; source venv/bin/activate ; pip3 install -r requirements.txt ; python3 app.py
 ```
 
 ### Instalação Rápida (One-Liner)
