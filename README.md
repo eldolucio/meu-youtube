@@ -35,6 +35,16 @@ Fundo em **#000000** real, tipografia **Barlow 900** e acentos em **Verde Limão
 A versão completa com sincronização RSS e banco de dados está disponível neste repositório e foi construída para rodar perfeitamente em containers.
 > **Nota de Testes:** O ambiente de execução e as imagens Docker são ativamente testados em uma **Máquina Virtual com Windows**.
 
+### Instalação Rápida via Docker (Apenas Linux)
+
+Se você estiver rodando um servidor ou máquina virtual Linux (Ubuntu/Debian) do zero, pode rodar o super-comando abaixo. Ele instala o Docker automaticamente, baixa o código, sobe os containers e já abre o navegador:
+
+```bash
+cd ~ ; sudo apt update ; sudo apt install -y curl git python3 ; curl -fsSL https://get.docker.com | sudo sh ; rm -rf meu-youtube ; git clone https://github.com/eldolucio/meu-youtube.git ; cd meu-youtube ; sudo docker compose up -d --build ; python3 -c "import webbrowser, time; time.sleep(2); webbrowser.open('http://127.0.0.1:5005')"
+```
+
+### Instalação Passo a Passo (Windows, Mac e Linux)
+
 1. Certifique-se de ter o [Docker](https://www.docker.com/) instalado em sua máquina.
 2. Clone este repositório para o seu ambiente local:
    ```bash
