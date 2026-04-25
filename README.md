@@ -53,9 +53,17 @@ A versão completa com sincronização RSS e banco de dados está disponível ne
 
 Se preferir não utilizar o Docker, você pode rodar o projeto diretamente com Python.
 
+### Instalação Completa do Zero (Apenas Windows PowerShell)
+
+Se você **não tem o Python instalado** e quer instalar tudo automaticamente de uma só vez (Python, dependências e iniciar o servidor), abra o **PowerShell** e rode o comando abaixo:
+
+```powershell
+winget install -e --id Python.Python.3.11 --accept-source-agreements --accept-package-agreements ; $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") ; python -m venv venv ; .\venv\Scripts\activate ; pip install -r requirements.txt ; python app.py
+```
+
 ### Instalação Rápida (One-Liner)
 
-Se você já tem o repositório clonado e o Python instalado, instale todas as dependências e inicie o projeto com **um único comando**:
+Se você **já tem o repositório clonado e o Python instalado**, instale todas as dependências e inicie o projeto com **um único comando**:
 
 **No Windows (CMD):**
 ```cmd
