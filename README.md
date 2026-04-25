@@ -53,15 +53,24 @@ A versão completa com sincronização RSS e banco de dados está disponível ne
 
 Se preferir não utilizar o Docker, você pode rodar o projeto diretamente com Python.
 
-### Instalação Completa do Zero (Apenas Windows PowerShell)
+### Instalação Completa do Zero (Máquinas Novas)
 
-Se você **não tem o Python instalado** e quer instalar tudo automaticamente de uma só vez (Python, dependências e iniciar o servidor), abra o **PowerShell** e rode o comando abaixo:
+Se você **não tem nada instalado** e quer baixar e configurar tudo automaticamente de uma só vez (Python, Git, dependências e iniciar o servidor), abra o seu terminal e rode o comando correspondente ao seu sistema. Todos eles limpam tentativas anteriores, baixam o código, instalam tudo de forma isolada e já abrem o navegador:
 
+**No Windows (Abra o PowerShell como Administrador):**
 ```powershell
 cd ~ ; Remove-Item -Recurse -Force .\venv -ErrorAction SilentlyContinue ; Remove-Item -Recurse -Force meu-youtube -ErrorAction SilentlyContinue ; winget install -e --id Git.Git --accept-source-agreements --accept-package-agreements ; winget install -e --id Python.Python.3.11 --accept-source-agreements --accept-package-agreements ; $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") ; git clone https://github.com/eldolucio/meu-youtube.git ; cd meu-youtube ; python -m venv venv ; .\venv\Scripts\python.exe -m pip install -r requirements.txt ; .\venv\Scripts\python.exe app.py
 ```
 
-> **Nota:** Esse comando limpa arquivos antigos (`Remove-Item`), muda para sua pasta de usuário (`cd ~`), instala o Git e o Python via `winget`, baixa o projeto, instala as dependências de forma segura (sem erros de permissão) e já inicia!
+**No Mac (Terminal):**
+```bash
+cd ~ && rm -rf venv meu-youtube && git clone https://github.com/eldolucio/meu-youtube.git && cd meu-youtube && python3 -m venv venv && source venv/bin/activate && pip3 install -r requirements.txt && python3 app.py
+```
+
+**No Linux - Ubuntu/Debian (Bash):**
+```bash
+cd ~ && rm -rf venv meu-youtube && sudo apt update && sudo apt install -y git python3 python3-venv python3-pip && git clone https://github.com/eldolucio/meu-youtube.git && cd meu-youtube && python3 -m venv venv && source venv/bin/activate && pip3 install -r requirements.txt && python3 app.py
+```
 
 ### Instalação Rápida (One-Liner)
 
