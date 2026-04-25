@@ -57,9 +57,14 @@ Se preferir não utilizar o Docker, você pode rodar o projeto diretamente com P
 
 Se você já tem o repositório clonado e o Python instalado, instale todas as dependências e inicie o projeto com **um único comando**:
 
-**No Windows (CMD/PowerShell):**
-```powershell
+**No Windows (CMD):**
+```cmd
 python -m venv venv && .\venv\Scripts\activate && pip install -r requirements.txt && python app.py
+```
+
+**No Windows (PowerShell):**
+```powershell
+python -m venv venv ; .\venv\Scripts\activate ; pip install -r requirements.txt ; python app.py
 ```
 
 **No Mac/Linux (Bash):**
