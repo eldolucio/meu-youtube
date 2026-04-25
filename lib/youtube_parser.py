@@ -140,13 +140,17 @@ def get_cached_videos(ttl=600):
             elif video_id:
                 thumbnail = f"https://img.youtube.com/vi/{video_id}/mqdefault.jpg"
                 
-            published_str = entry.get('published', '')
             published_ts = 0
             if entry.get('published_parsed'):
                 try:
                     published_ts = time.mktime(entry.published_parsed)
                 except Exception:
                     published_ts = 0
+            
+            published_str = entry.get('published', '')
+            if published_ts > 0:
+                from datetime import datetime
+                published_str = datetime.fromtimestamp(published_ts).strftime('%d/%m/%Y %H:%M')
             
             video_list.append({
                 "title": entry.get('title', 'Sem título'),
