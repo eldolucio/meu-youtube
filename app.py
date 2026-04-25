@@ -218,4 +218,8 @@ def send_static(path):
 
 if __name__ == "__main__":
     print("INICIANDO SERVIDOR EM http://127.0.0.1:5005")
+    import webbrowser
+    import threading
+    # Open browser automatically after a short delay
+    threading.Timer(1.5, lambda: webbrowser.open('http://127.0.0.1:5005')).start()
     app.run(port=5005)
