@@ -30,8 +30,11 @@
             --yt-hover: #f0f0f0;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background-color: var(--yt-main-bg); color: var(--yt-text); font-family: var(--font-main); transition: all 0.3s ease; }
+        body { background-color: var(--yt-main-bg); color: var(--yt-text); font-family: var(--font-main); transition: background 0.3s ease; overflow-x: hidden; }
         
+        /* PROGRESS BAR */
+        .refresh-progress { position: fixed; top: 0; left: 0; height: 1px; background: var(--yt-accent); width: 0%; z-index: 9999; }
+
         header.yt-header { 
             height: 56px; background: var(--yt-sidebar-bg); border-bottom: 1px solid var(--yt-border); 
             display: flex; align-items: center; justify-content: space-between; padding: 0 16px; 
@@ -40,12 +43,22 @@
         .my-logo { font-size: 20px; font-weight: 700; letter-spacing: -1px; color: var(--yt-text); display: flex; align-items: center; text-decoration: none; }
         .my-logo span { background-color: var(--yt-logo-red); color: #ffffff; padding: 2px 6px; border-radius: 4px; margin-left: 4px; font-weight: 800; }
         
-        .search-mock { flex: 0 1 500px; display: flex; position: relative; }
+        .search-mock { flex: 0 1 500px; display: flex; }
         .search-mock input { width: 100%; padding: 8px 16px; background: #080808; border: 1px solid var(--yt-border); color: #fff; outline: none; }
         .search-mock button { background: #222; border: 1px solid var(--yt-border); border-left: none; padding: 0 20px; cursor: pointer; color: #fff; }
 
+        .header-actions { display: flex; align-items: center; gap: 15px; }
+        .action-btn { background: none; border: none; color: var(--yt-text-secondary); cursor: pointer; font-size: 18px; display: flex; transition: color 0.2s; }
+        .action-btn:hover { color: var(--yt-accent); }
+
         .app-container { display: flex; min-height: calc(100vh - 56px); }
-        nav.sidebar { width: 240px; background-color: var(--yt-sidebar-bg); border-right: 1px solid var(--yt-border); height: calc(100vh - 56px); position: sticky; top: 56px; overflow-y: auto; padding-top: 12px; }
+        
+        /* SIDEBAR */
+        aside.sidebar { width: 240px; background-color: var(--yt-sidebar-bg); border-right: 1px solid var(--yt-border); height: calc(100vh - 56px); position: sticky; top: 56px; overflow-y: auto; padding: 0 0 40px 0; }
+        .profile-section { padding: 16px; background: #050505; border-bottom: 1px solid #111; cursor: pointer; }
+        .profile-name { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #fff; }
+        .profile-badge { font-size: 8px; background: var(--yt-accent); color: #000; padding: 2px 6px; border-radius: 2px; width: fit-content; margin-top: 4px; font-weight: 900; }
+        
         .sidebar-item { 
             display: flex; align-items: center; padding: 0 24px; height: 40px; text-decoration: none; 
             color: var(--yt-text); font-size: 14px; transition: background 0.2s; border-left: 3px solid transparent; 
@@ -55,42 +68,46 @@
         .sidebar-item.active { background: var(--yt-hover); border-left-color: var(--yt-accent); font-weight: 600; color: var(--yt-accent); }
         .sidebar-title { padding: 24px 24px 8px; font-size: 11px; text-transform: uppercase; color: var(--yt-text-secondary); font-weight: 700; letter-spacing: 1px; }
 
+        /* LIST */
         main.list { flex: 1; max-width: 1000px; margin: 30px auto; padding: 0 40px; }
         .item { display: flex; padding: 16px 0; border-bottom: 1px solid var(--yt-border); }
-        .thumb { cursor: pointer; position: relative; flex-shrink: 0; }
-        .thumb img { width: var(--thumb-width); aspect-ratio: 16/9; object-fit: cover; border: 1px solid var(--yt-border); transition: opacity 0.3s; opacity: 0.9; }
-        .item:hover .thumb img { opacity: 1; }
-        
+        .thumb { cursor: pointer; flex-shrink: 0; }
+        .thumb img { width: var(--thumb-width); aspect-ratio: 16/9; object-fit: cover; border: 1px solid var(--yt-border); opacity: 0.9; }
         .meta { margin-left: 16px; flex: 1; }
-        .title-btn { 
-            display: block; color: var(--yt-text); font-size: 18px; font-weight: 600; 
-            text-decoration: none; margin-bottom: 8px; background: none; border: none; 
-            cursor: pointer; text-align: left; line-height: 1.2;
-        }
+        .title-btn { display: block; color: var(--yt-text); font-size: 18px; font-weight: 600; text-decoration: none; background: none; border: none; cursor: pointer; text-align: left; line-height: 1.2; }
         .title-btn:hover { color: var(--yt-accent); }
-        .channel { font-size: 13px; color: var(--yt-text-secondary); }
 
-        .demo-announcement { 
-            background: rgba(200, 241, 53, 0.05); border: 1px dashed var(--yt-accent); 
-            padding: 20px; border-radius: 4px; margin-bottom: 40px; color: var(--yt-accent);
-            display: flex; justify-content: space-between; align-items: center; 
+        /* SETTINGS PANEL */
+        .settings-panel { 
+            position: fixed; top: 56px; right: -320px; width: 300px; height: calc(100vh - 56px); 
+            background: #050505; border-left: 1px solid var(--yt-border); z-index: 4000; transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 20px; overflow-y: auto;
         }
-        .live-btn { font-weight: 900; color: #000; background: var(--yt-accent); padding: 10px 20px; text-decoration: none; text-transform: uppercase; letter-spacing: 1px; }
+        .settings-panel.open { right: 0; }
+        .settings-group { margin-bottom: 25px; border-bottom: 1px solid #1a1a1a; padding-bottom: 15px; }
+        .group-label { font-size: 10px; font-weight: 800; color: var(--yt-text-secondary); text-transform: uppercase; margin-bottom: 15px; display: block; }
+        .range-mock { width: 100%; height: 4px; background: #222; border-radius: 2px; position: relative; margin-top: 10px; }
+        .range-mock::after { content: ''; position: absolute; top: -5px; left: 60%; width: 14px; height: 14px; background: var(--yt-accent); border-radius: 50%; }
 
-        /* PLAYER MODAL SIMULATION */
-        .modal { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.95); z-index: 5000; display: none; 
-            align-items: center; justify-content: center; 
+        /* PROFILE DROPDOWN */
+        .profile-dropdown {
+            display: none; position: absolute; top: 110px; left: 10px; width: 220px;
+            background: #111; border: 1px solid var(--yt-border); z-index: 5000; box-shadow: 0 10px 40px rgba(0,0,0,0.8);
         }
-        .modal-content { width: 90%; max-width: 900px; aspect-ratio: 16/9; background: #000; position: relative; border: 2px solid var(--yt-accent); }
-        .close-modal { position: absolute; top: -50px; right: 0; color: #fff; background: none; border: none; font-size: 40px; cursor: pointer; }
+        .profile-opt { padding: 12px; color: #fff; font-size: 13px; border-bottom: 1px solid #1a1a1a; cursor: pointer; }
+        .profile-opt:hover { background: #1a1a1a; color: var(--yt-accent); }
 
-        .header-actions { display: flex; align-items: center; gap: 20px; }
-        .theme-toggle { background: none; border: none; color: var(--yt-text-secondary); cursor: pointer; font-size: 20px; }
+        /* MODAL */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 6000; display: none; align-items: center; justify-content: center; }
+        .modal-content { width: 90%; max-width: 900px; aspect-ratio: 16/9; background: #000; border: 2px solid var(--yt-accent); position: relative; }
+        .close-modal { position: absolute; top: -50px; right: 0; color: #fff; font-size: 40px; background: none; border: none; cursor: pointer; }
+
+        .import-btn { width: 100%; padding: 12px; background: var(--yt-accent); border: none; color: #000; font-weight: 800; text-transform: uppercase; font-size: 11px; cursor: pointer; margin-top: 20px; }
     </style>
 </head>
 <body>
+
+    <div class="refresh-progress" id="progress"></div>
 
     <header class="yt-header">
         <a href="#" class="my-logo">meu <span>youtube</span></a>
@@ -99,83 +116,118 @@
             <button type="button">🔍</button>
         </div>
         <div class="header-actions">
-            <button class="theme-toggle" id="theme-btn">🌙</button>
-            <a href="https://meu-youtube-eight.vercel.app/" target="_blank" class="live-btn" style="font-size: 11px;">VER LIVE 🛰️</a>
+            <button class="action-btn" id="theme-btn">🌙</button>
+            <button class="action-btn" onclick="toggleSettings()">⚙️</button>
+            <a href="https://meu-youtube-eight.vercel.app/" target="_blank" style="background:#fff; color:#000; padding:4px 8px; border-radius:2px; font-size:10px; font-weight:900; text-decoration:none;">LIVE 🛰️</a>
         </div>
     </header>
 
     <div class="app-container">
-        <nav class="sidebar">
-            <button class="sidebar-item active">Início</button>
-            <button class="sidebar-item">Histórico</button>
-            <button class="sidebar-item">Biblioteca</button>
-            <h3 class="sidebar-title">Demonstração</h3>
-            <button class="sidebar-item">Papo de Nerd</button>
-            <a href="https://meu-youtube-eight.vercel.app/sobre" class="sidebar-item" style="margin-top: 50px; opacity: 0.5; text-decoration: none;">Sobre o Autor</a>
-        </nav>
+        <aside class="sidebar">
+            <div class="profile-section" onclick="toggleProfile()">
+                <div class="profile-name">ELDO LUCIO</div>
+                <div class="profile-badge">ADULTO</div>
+            </div>
+            
+            <div id="profile-drop" class="profile-dropdown">
+                <div class="profile-opt" onclick="alert('Demo: Troca de perfil simulada')">Papo de Nerd <span style="font-size:8px; opacity:0.5;">ADULTO</span></div>
+                <div class="profile-opt" onclick="alert('Demo: Troca de perfil simulada')">Visitante <span style="font-size:8px; opacity:0.5;">CRIANÇA</span></div>
+            </div>
+
+            <nav style="margin-top:20px;">
+                <button class="sidebar-item active">Início</button>
+                <button class="sidebar-item">Histórico</button>
+                <button class="sidebar-item">Biblioteca</button>
+                <h3 class="sidebar-title">Demonstração</h3>
+                <button class="sidebar-item">Papo de Nerd</button>
+                <button class="sidebar-item">Manual do Usuário</button>
+            </nav>
+
+            <div style="padding:24px; position:absolute; bottom:0; width:100%;">
+                <div style="font-size:10px; color:#333; text-transform:uppercase;">v2.5.0 ST Showcase</div>
+            </div>
+        </aside>
 
         <main class="list">
-            <section class="demo-announcement">
-                <div>
-                    <strong style="display: block; font-size: 16px;">Vitrime Estática HTML5</strong>
-                    <p style="font-size: 13px; margin-top: 5px; opacity: 0.7;">Esta é uma demonstração de design. Para usar o app real, clique no botão ao lado.</p>
-                </div>
-                <a href="https://meu-youtube-eight.vercel.app/" target="_blank" class="live-btn">ACESSAR APP 🦾</a>
-            </section>
-
             <article class="item">
-                <div class="thumb" onclick="openDemo('qV70V2v7X0I')"><img src="https://img.youtube.com/vi/qV70V2v7X0I/mqdefault.jpg" alt="thumb"></div>
+                <div class="thumb" onclick="openDemo('qV70V2v7X0I')"><img src="https://img.youtube.com/vi/qV70V2v7X0I/mqdefault.jpg" alt=""></div>
                 <div class="meta">
-                    <button class="title-btn" onclick="openDemo('qV70V2v7X0I')">Manifesto da Independência Digital: O Fim dos Algoritmos</button>
+                    <button class="title-btn" onclick="openDemo('qV70V2v7X0I')">MANIFESTO 2026: Retomada da Independência Digital</button>
                     <p class="channel">Papo de Nerd</p>
-                    <time style="font-size: 11px; opacity: 0.4; display: block; margin-top: 5px;">2 horas atrás</time>
+                    <div style="font-size:11px; opacity:0.4; margin-top:5px;">Postado recentemente // 4K</div>
                 </div>
             </article>
 
             <article class="item">
-                <div class="thumb" onclick="openDemo('5qap5aO4i9A')"><img src="https://img.youtube.com/vi/5qap5aO4i9A/mqdefault.jpg" alt="thumb"></div>
+                <div class="thumb" onclick="openDemo('ScMzIvxBSi4')"><img src="https://img.youtube.com/vi/ScMzIvxBSi4/mqdefault.jpg" alt=""></div>
                 <div class="meta">
-                    <button class="title-btn" onclick="openDemo('5qap5aO4i9A')">O Poder do Preto Absoluto: Design Industrial em Telas OLED</button>
-                    <p class="channel">Brutalism Design Lab</p>
-                    <time style="font-size: 11px; opacity: 0.4; display: block; margin-top: 5px;">5 horas atrás</time>
+                    <button class="title-btn" onclick="openDemo('ScMzIvxBSi4')">Arquitetura de Softwares Brutalistas: O Guia Definitivo</button>
+                    <p class="channel">Engineering Art</p>
+                    <div style="font-size:11px; opacity:0.4; margin-top:5px;">2 dias atrás</div>
                 </div>
             </article>
-
-            <article class="item">
-                <div class="thumb" onclick="openDemo('ScMzIvxBSi4')"><img src="https://img.youtube.com/vi/ScMzIvxBSi4/mqdefault.jpg" alt="thumb"></div>
-                <div class="meta">
-                    <button class="title-btn" onclick="openDemo('ScMzIvxBSi4')">Produtividade Hacker: Como Retomar o Controle do seu Tempo</button>
-                    <p class="channel">Deep Systems</p>
-                    <time style="font-size: 11px; opacity: 0.4; display: block; margin-top: 5px;">1 dia atrás</time>
-                </div>
-            </article>
-
-            <article class="item">
-                <div class="thumb" onclick="openDemo('eR5VjC_kG9M')"><img src="https://img.youtube.com/vi/eR5VjC_kG9M/mqdefault.jpg" alt="thumb"></div>
-                <div class="meta">
-                    <button class="title-btn" onclick="openDemo('eR5VjC_kG9M')">Configurando seu Workspace para Foco Total</button>
-                    <p class="channel">Minimalist Dev</p>
-                    <time style="font-size: 11px; opacity: 0.4; display: block; margin-top: 5px;">3 dias atrás</time>
-                </div>
-            </article>
+            
+            <p style="text-align:center; padding:40px; opacity:0.3; font-size:12px;">OUTROS VÍDEOS OCULTOS NESTA DEMO</p>
         </main>
     </div>
 
-    <!-- MOCK PLAYER -->
+    <!-- SETTINGS PANEL MOCK -->
+    <div id="settings-p" class="settings-panel">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+            <h3 style="font-size:14px; text-transform:uppercase; color:var(--yt-accent);">Configurações</h3>
+            <button onclick="toggleSettings()" style="background:none; border:none; color:#fff; font-size:24px; cursor:pointer;">×</button>
+        </div>
+        
+        <div class="settings-group">
+            <span class="group-label">Layout do Feed</span>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <span style="font-size:13px;">Modo Compacto</span>
+                <div style="width:40px; height:20px; background:#222; border-radius:10px;"></div>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-size:13px;">Texto Condensado</span>
+                <div style="width:40px; height:20px; background:var(--yt-accent); border-radius:10px; position:relative;">
+                    <div style="width:14px; height:14px; background:#fff; border-radius:50%; position:absolute; right:3px; top:3px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-group">
+            <span class="group-label">Tamanho das Thumbs (Demo)</span>
+            <div class="range-mock"></div>
+        </div>
+
+        <div class="settings-group">
+            <span class="group-label">Google Takeout</span>
+            <button class="import-btn" onclick="alert('Demo: Formulário de Importação Simulado')">Importar Arquivo CSV</button>
+        </div>
+    </div>
+
     <div id="demo-modal" class="modal">
         <div class="modal-content">
             <button class="close-modal" onclick="closeDemo()">×</button>
-            <iframe id="demo-iframe" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            <iframe id="demo-iframe" src="" frameborder="0" width="100%" height="100%" allowfullscreen></iframe>
         </div>
     </div>
 
     <script>
+        // Progress Bar Simulation
+        let prog = 0;
+        setInterval(() => {
+            prog += 0.5;
+            if(prog > 100) prog = 0;
+            document.getElementById('progress').style.width = prog + '%';
+        }, 500);
+
+        function toggleSettings() { document.getElementById('settings-p').classList.toggle('open'); }
+        function toggleProfile() { 
+            const d = document.getElementById('profile-drop');
+            d.style.display = d.style.display === 'block' ? 'none' : 'block';
+        }
         function openDemo(id) {
             const modal = document.getElementById('demo-modal');
             const iframe = document.getElementById('demo-iframe');
             iframe.src = `https://www.youtube.com/embed/${id}?autoplay=1`;
-            iframe.style.width = '100%';
-            iframe.style.height = '100%';
             modal.style.display = 'flex';
         }
         function closeDemo() {
@@ -186,13 +238,11 @@
             document.body.classList.toggle('light-mode');
             this.textContent = document.body.classList.contains('light-mode') ? '☀️' : '🌙';
         });
-        // Mock sidebar selection
-        document.querySelectorAll('.sidebar-item').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
+        window.onclick = function(event) {
+            if (!event.target.matches('.profile-section') && !event.target.matches('.profile-name')) {
+                document.getElementById('profile-drop').style.display = 'none';
+            }
+        }
     </script>
 </body>
 </html>
