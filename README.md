@@ -69,7 +69,7 @@ cd ~ && rm -rf venv meu-youtube && git clone https://github.com/eldolucio/meu-yo
 
 **No Linux - Ubuntu/Debian (Bash):**
 ```bash
-cd ~ && rm -rf venv meu-youtube && sudo apt update && sudo apt install -y git python3 python3-venv python3-pip && git clone https://github.com/eldolucio/meu-youtube.git && cd meu-youtube && python3 -m venv venv && source venv/bin/activate && pip3 install -r requirements.txt && python3 app.py
+cd ~ && rm -rf venv meu-youtube ; sudo apt update ; sudo apt install -y git python3 python3-venv python3-pip && git clone https://github.com/eldolucio/meu-youtube.git && cd meu-youtube && python3 -m venv venv && source venv/bin/activate && pip3 install -r requirements.txt && python3 app.py
 ```
 
 ### Instalação Rápida (One-Liner)
