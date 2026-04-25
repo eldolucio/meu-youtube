@@ -51,7 +51,23 @@ A versão completa com sincronização RSS e banco de dados está disponível ne
 
 ## 💻 Como Instalar Manualmente (Sem Docker)
 
-Se preferir não utilizar o Docker, você pode rodar o projeto diretamente com Python:
+Se preferir não utilizar o Docker, você pode rodar o projeto diretamente com Python.
+
+### Instalação Rápida (One-Liner)
+
+Se você já tem o repositório clonado e o Python instalado, instale todas as dependências e inicie o projeto com **um único comando**:
+
+**No Windows (CMD/PowerShell):**
+```powershell
+python -m venv venv && .\venv\Scripts\activate && pip install -r requirements.txt && python app.py
+```
+
+**No Mac/Linux (Bash):**
+```bash
+python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt && python3 app.py
+```
+
+### Instalação Passo a Passo
 
 1. Certifique-se de ter o [Python 3.8+](https://www.python.org/downloads/) instalado em sua máquina.
 2. Clone este repositório para o seu ambiente local:
