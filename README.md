@@ -58,21 +58,23 @@ Se preferir não utilizar o Docker, você pode rodar o projeto diretamente com P
 Se você **não tem o Python instalado** e quer instalar tudo automaticamente de uma só vez (Python, dependências e iniciar o servidor), abra o **PowerShell** e rode o comando abaixo:
 
 ```powershell
-winget install -e --id Python.Python.3.11 --accept-source-agreements --accept-package-agreements ; $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") ; python -m venv venv ; .\venv\Scripts\activate ; pip install -r requirements.txt ; python app.py
+cd ~ ; winget install -e --id Python.Python.3.11 --accept-source-agreements --accept-package-agreements ; $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") ; git clone https://github.com/eldolucio/meu-youtube.git ; cd meu-youtube ; python -m venv venv ; .\venv\Scripts\python.exe -m pip install -r requirements.txt ; .\venv\Scripts\python.exe app.py
 ```
+
+> **Nota:** Esse comando muda para a sua pasta de usuário (`cd ~`), instala o Python via `winget`, baixa o projeto, instala tudo de forma segura (sem erros de script bloqueado) e já inicia!
 
 ### Instalação Rápida (One-Liner)
 
-Se você **já tem o repositório clonado e o Python instalado**, instale todas as dependências e inicie o projeto com **um único comando**:
+Se você **já tem o repositório clonado e o Python instalado**, abra o terminal na pasta do projeto e rode **um único comando**:
 
 **No Windows (CMD):**
 ```cmd
-python -m venv venv && .\venv\Scripts\activate && pip install -r requirements.txt && python app.py
+python -m venv venv && .\venv\Scripts\python.exe -m pip install -r requirements.txt && .\venv\Scripts\python.exe app.py
 ```
 
 **No Windows (PowerShell):**
 ```powershell
-python -m venv venv ; .\venv\Scripts\activate ; pip install -r requirements.txt ; python app.py
+python -m venv venv ; .\venv\Scripts\python.exe -m pip install -r requirements.txt ; .\venv\Scripts\python.exe app.py
 ```
 
 **No Mac/Linux (Bash):**
@@ -88,21 +90,26 @@ python3 -m venv venv && source venv/bin/activate && pip install -r requirements.
    git clone https://github.com/eldolucio/meu-youtube.git
    cd meu-youtube
    ```
-3. Crie e ative um ambiente virtual (recomendado):
+3. Crie um ambiente virtual:
    ```bash
    python -m venv venv
-   # No Windows:
-   venv\Scripts\activate
+   ```
+4. Instale as dependências executando o Python diretamente do ambiente virtual (evita erros de permissão no Windows):
+   ```bash
+   # No Windows (CMD/PowerShell):
+   .\venv\Scripts\python.exe -m pip install -r requirements.txt
+
    # No Mac/Linux:
    source venv/bin/activate
-   ```
-4. Instale as dependências do projeto:
-   ```bash
    pip install -r requirements.txt
    ```
 5. Inicie o servidor:
    ```bash
-   python app.py
+   # No Windows:
+   .\venv\Scripts\python.exe app.py
+
+   # No Mac/Linux:
+   python3 app.py
    ```
 6. O servidor será iniciado. Acesse pelo navegador: `http://localhost:5005`
 
