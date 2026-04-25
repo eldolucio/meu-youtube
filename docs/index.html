@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SHOWCASE | meu youtube industrial</title>
     <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="icon" type="image/png" href="favicon.png">
     <style>
         :root {
@@ -21,16 +22,16 @@
             --thumb-width: 246px;
         }
         .light-mode {
-            --yt-main-bg: #f5f5f5;
+            --yt-main-bg: #f9f9f9;
             --yt-sidebar-bg: #ffffff;
             --yt-card-bg: #ffffff;
-            --yt-border: #e0e0e0;
-            --yt-text: #1a1a1a;
+            --yt-border: #e2e2e2;
+            --yt-text: #111;
             --yt-text-secondary: #666;
-            --yt-hover: #f0f0f0;
+            --yt-hover: #f1f1f1;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background-color: var(--yt-main-bg); color: var(--yt-text); font-family: var(--font-main); transition: background 0.3s ease; overflow-x: hidden; }
+        body { background-color: var(--yt-main-bg); color: var(--yt-text); font-family: var(--font-main); overflow-x: hidden; transition: background 0.3s; }
         
         .refresh-progress { position: fixed; top: 0; left: 0; height: 1px; background: var(--yt-accent); width: 0%; z-index: 9999; }
 
@@ -42,43 +43,55 @@
         .my-logo { font-size: 20px; font-weight: 700; letter-spacing: -1px; color: var(--yt-text); display: flex; align-items: center; text-decoration: none; }
         .my-logo span { background-color: var(--yt-logo-red); color: #ffffff; padding: 2px 6px; border-radius: 4px; margin-left: 4px; font-weight: 800; }
         
-        .search-mock { flex: 0 1 500px; display: flex; }
-        .search-mock input { width: 100%; padding: 8px 16px; background: #080808; border: 1px solid var(--yt-border); color: #fff; outline: none; }
-        .search-mock button { background: #222; border: 1px solid var(--yt-border); border-left: none; padding: 0 20px; cursor: pointer; color: #fff; }
+        .search-area { flex: 0 1 500px; display: flex; }
+        .search-area input { width: 100%; padding: 8px 16px; background: #000; border: 1px solid var(--yt-border); color: #fff; outline: none; }
+        .search-area button { background: #222; border: 1px solid var(--yt-border); border-left: none; padding: 0 20px; cursor: pointer; color: #fff; }
 
         .header-actions { display: flex; align-items: center; gap: 15px; }
-        .action-btn { background: none; border: none; color: var(--yt-text-secondary); cursor: pointer; font-size: 18px; display: flex; transition: color 0.2s; }
-        .action-btn:hover { color: var(--yt-accent); }
+        .btn-industrial { background: transparent; border: 1px solid var(--yt-border); color: var(--yt-text-secondary); padding: 5px 12px; cursor: pointer; font-size: 11px; font-weight: 700; text-transform: uppercase; text-decoration: none; }
+        .btn-industrial:hover { color: var(--yt-accent); border-color: var(--yt-accent); }
 
         .app-container { display: flex; min-height: calc(100vh - 56px); }
+        aside.sidebar { width: 240px; background-color: var(--yt-sidebar-bg); border-right: 1px solid var(--yt-border); height: calc(100vh - 56px); position: sticky; top: 56px; overflow-y: auto; padding-bottom: 50px; }
         
-        aside.sidebar { width: 240px; background-color: var(--yt-sidebar-bg); border-right: 1px solid var(--yt-border); height: calc(100vh - 56px); position: sticky; top: 56px; overflow-y: auto; padding: 0 0 40px 0; }
-        .profile-section { padding: 16px; background: #050505; border-bottom: 1px solid #111; cursor: pointer; }
-        .profile-name { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #fff; }
-        .profile-badge { font-size: 8px; background: var(--yt-accent); color: #000; padding: 2px 6px; border-radius: 2px; width: fit-content; margin-top: 4px; font-weight: 900; }
-        
-        .sidebar-item { display: flex; align-items: center; padding: 0 24px; height: 40px; text-decoration: none; color: var(--yt-text); font-size: 14px; transition: background 0.2s; border-left: 3px solid transparent; background: none; border: none; width: 100%; cursor: pointer; text-align: left; }
+        .profile-header { padding: 16px; background: #050505; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .profile-name { font-size: 14px; font-weight: 700; text-transform: uppercase; color: #fff; letter-spacing: 1px; }
+        .profile-badge { font-size: 8px; background: var(--yt-accent); color: #000; padding: 2px 6px; border-radius: 2px; font-weight: 900; }
+
+        .sidebar-item { 
+            display: flex; align-items: center; padding: 0 24px; height: 40px; text-decoration: none; 
+            color: var(--yt-text); font-size: 14px; transition: background 0.2s; border-left: 3px solid transparent; 
+            background: none; border: none; width: 100%; cursor: pointer; text-align: left;
+        }
+        .sidebar-item i, .sidebar-item svg { margin-right: 20px; font-size: 18px; width: 20px; text-align: center; opacity: 0.7; }
         .sidebar-item:hover { background: var(--yt-hover); border-left-color: var(--yt-accent); }
         .sidebar-item.active { background: var(--yt-hover); border-left-color: var(--yt-accent); font-weight: 600; color: var(--yt-accent); }
-        .sidebar-title { padding: 24px 24px 8px; font-size: 11px; text-transform: uppercase; color: var(--yt-text-secondary); font-weight: 700; letter-spacing: 1px; }
+        
+        .sidebar-title { padding: 24px 24px 8px; font-size: 11px; text-transform: uppercase; color: var(--yt-text-secondary); font-weight: 700; letter-spacing: 1px; border-top: 1px solid #111; margin-top: 10px; }
+        .channel-list { padding-top: 5px; }
 
         main.list { flex: 1; max-width: 1000px; margin: 30px auto; padding: 0 40px; }
+        .view-header { margin-bottom: 30px; font-size: 24px; text-transform: uppercase; letter-spacing: 2px; font-weight: 900; }
+        
         .item { display: flex; padding: 16px 0; border-bottom: 1px solid var(--yt-border); }
         .thumb { cursor: pointer; flex-shrink: 0; }
         .thumb img { width: var(--thumb-width); aspect-ratio: 16/9; object-fit: cover; border: 1px solid var(--yt-border); opacity: 0.9; }
-        .meta { margin-left: 16px; flex: 1; }
-        .title-btn { display: block; color: var(--yt-text); font-size: 18px; font-weight: 600; text-decoration: none; background: none; border: none; cursor: pointer; text-align: left; line-height: 1.2; }
+        .meta { margin-left: 16px; flex: 1; position: relative; }
+        .title-btn { display: block; color: var(--yt-text); font-size: 18px; font-weight: 600; text-decoration: none; background: none; border: none; cursor: pointer; text-align: left; line-height: 1.2; width: 90%; }
         .title-btn:hover { color: var(--yt-accent); }
-        .meta-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+        .meta-row { display: flex; justify-content: space-between; align-items: center; margin-top: 5px; }
         .channel { font-size: 13px; color: var(--yt-text-secondary); }
-        .video-date { font-size: 11px; color: var(--yt-text-secondary); font-weight: 600; }
+        .time { font-size: 11px; color: var(--yt-text-secondary); margin-top: 4px; display: block; }
+        .heart-btn { background: none; border: none; color: var(--yt-text-secondary); cursor: pointer; font-size: 14px; }
+        .heart-btn:hover { color: var(--yt-accent); }
 
-        .settings-panel { position: fixed; top: 56px; right: -320px; width: 300px; height: calc(100vh - 56px); background: #050505; border-left: 1px solid var(--yt-border); z-index: 4000; transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1); padding: 20px; overflow-y: auto; }
+        .settings-panel { position: fixed; top: 56px; right: -320px; width: 300px; height: calc(100vh - 56px); background: #050505; border-left: 1px solid var(--yt-border); z-index: 5000; transition: right 0.3s; padding: 20px; }
         .settings-panel.open { right: 0; }
+        
         .profile-dropdown { display: none; position: absolute; top: 110px; left: 10px; width: 220px; background: #111; border: 1px solid var(--yt-border); z-index: 5000; box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 6000; display: none; align-items: center; justify-content: center; }
-        .modal-content { width: 90%; max-width: 900px; aspect-ratio: 16/9; background: #000; border: 2px solid var(--yt-accent); position: relative; }
-        .close-modal { position: absolute; top: -50px; right: 0; color: #fff; font-size: 40px; background: none; border: none; cursor: pointer; }
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9000; display: none; align-items: center; justify-content: center; }
+        .modal-content { width: 95%; max-width: 960px; aspect-ratio: 16/9; position: relative; border: 1px solid var(--yt-accent); box-shadow: 0 0 30px rgba(200, 241, 53, 0.2); }
+        .close-modal { position: absolute; top: -50px; right: 0; background: none; border: none; color: #fff; font-size: 40px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -87,118 +100,96 @@
 
     <header class="yt-header">
         <a href="#" class="my-logo">meu <span>youtube</span></a>
-        <div class="search-mock"><input type="text" placeholder="Pesquisar canal na demo..."><button type="button">🔍</button></div>
+        <div class="search-area">
+            <input type="text" placeholder="Pesquisar canal na demo...">
+            <button type="button"><i class="fas fa-search"></i></button>
+        </div>
         <div class="header-actions">
-            <button class="action-btn" id="theme-btn">🌙</button>
-            <button class="action-btn" onclick="toggleSettings()">⚙️</button>
-            <a href="https://meu-youtube-eight.vercel.app/" target="_blank" style="background:#fff; color:#000; padding:4px 8px; border-radius:2px; font-size:10px; font-weight:900; text-decoration:none;">LIVE 🛰️</a>
+            <button class="btn-industrial" onclick="alert('Sincronização Simulada')">ATUALIZAR</button>
+            <a href="/sobre" class="btn-industrial" style="border:none; opacity:0.6;">Sobre 2016</a>
+            <button class="action-btn" id="theme-btn" style="background:none; border:none; color:inherit; cursor:pointer;">🌙</button>
+            <button class="action-btn" onclick="toggleSettings()" style="background:none; border:none; color:inherit; cursor:pointer;">⚙️</button>
         </div>
     </header>
 
     <div class="app-container">
         <aside class="sidebar">
-            <div class="profile-section" onclick="toggleProfile()"><div class="profile-name">ELDO LUCIO</div><div class="profile-badge">ADULTO</div></div>
-            <div id="profile-drop" class="profile-dropdown">
-                <div class="profile-opt" onclick="alert('Demo: Eldo Lucio (Adulto)')">Eldo Lucio</div>
-                <div class="profile-opt" onclick="alert('Demo: Papo de Nerd (Adulto)')">Papo de Nerd</div>
+            <div class="profile-header" onclick="toggleProfile()">
+                <div style="display:flex; flex-direction:column;">
+                    <span class="profile-name">ELDO LUCIO</span>
+                    <span class="profile-badge">ADULTO</span>
+                </div>
+                <i class="fas fa-user-friends" style="color:#555;"></i>
             </div>
-            <nav style="margin-top:20px;">
-                <button class="sidebar-item active">Início</button>
-                <button class="sidebar-item">Histórico</button>
-                <button class="sidebar-item">Biblioteca</button>
-                <h3 class="sidebar-title">Demonstração</h3>
-                <button class="sidebar-item">Papo de Nerd</button>
-                <a href="https://meu-youtube-eight.vercel.app/sobre" class="sidebar-item" style="margin-top: 50px; opacity: 0.5; text-decoration: none;">Sobre o Autor</a>
+            
+            <div id="profile-drop" class="profile-dropdown">
+                <div style="padding:12px; font-size:10px; color:#555; text-transform:uppercase;">Trocar Perfil</div>
+                <div style="padding:12px; color:#fff; cursor:pointer; border-bottom:1px solid #1a1a1a;">Papo de Nerd</div>
+                <div style="padding:12px; color:#fff; cursor:pointer;">Visitante</div>
+            </div>
+
+            <nav style="margin-top:10px;">
+                <button class="sidebar-item active"><i class="fas fa-home"></i> Início</button>
+                <button class="sidebar-item"><i class="fas fa-history"></i> Histórico</button>
+                <button class="sidebar-item"><i class="fas fa-folder"></i> Biblioteca</button>
+                <button class="sidebar-item"><i class="fas fa-question-circle"></i> Ajuda</button>
             </nav>
+
+            <h3 class="sidebar-title">INSCRIÇÕES</h3>
+            <div class="channel-list">
+                <button class="sidebar-item"><img src="https://www.gstatic.com/youtube/img/branding/favicon/favicon_48x48.png" style="width:20px; border-radius:50%; margin-right:20px;"> Ale Mendonça</button>
+                <button class="sidebar-item"><img src="https://www.gstatic.com/youtube/img/branding/favicon/favicon_48x48.png" style="width:20px; border-radius:50%; margin-right:20px;"> Andre Pilli</button>
+                <button class="sidebar-item"><img src="https://www.gstatic.com/youtube/img/branding/favicon/favicon_48x48.png" style="width:20px; border-radius:50%; margin-right:20px;"> Atila Iamarino</button>
+                <button class="sidebar-item"><img src="https://www.gstatic.com/youtube/img/branding/favicon/favicon_48x48.png" style="width:20px; border-radius:50%; margin-right:20px;"> Canaltech</button>
+                <button class="sidebar-item"><img src="https://www.gstatic.com/youtube/img/branding/favicon/favicon_48x48.png" style="width:20px; border-radius:50%; margin-right:20px;"> Cinema com Rapadura</button>
+                <button class="sidebar-item"><img src="https://www.gstatic.com/youtube/img/branding/favicon/favicon_48x48.png" style="width:20px; border-radius:50%; margin-right:20px;"> Papo de Nerd</button>
+            </div>
         </aside>
 
         <main class="list">
-            <!-- VÍDEOS CRONOLÓGICOS (DD/MM/AAAA) -->
+            <h1 class="view-header">Início</h1>
+
             <article class="item">
-                <div class="thumb" onclick="openDemo('qV70V2v7X0I')"><img src="https://img.youtube.com/vi/qV70V2v7X0I/mqdefault.jpg"></div>
+                <div class="thumb" onclick="openDemo('Vb_Z7U7_t6U')"><img src="https://img.youtube.com/vi/Vb_Z7U7_t6U/mqdefault.jpg"></div>
                 <div class="meta">
-                    <button class="title-btn" onclick="openDemo('qV70V2v7X0I')">MANIFESTO 2026: A Retomada da Independência Digital</button>
-                    <div class="meta-footer"><p class="channel">Papo de Nerd</p><span class="video-date">24/04/2026</span></div>
+                    <button class="title-btn" onclick="openDemo('Vb_Z7U7_t6U')">DEU A DOIDA NA NILCINHA - Ep. 1772</button>
+                    <div class="meta-row"><p class="channel">Cadê a chave?</p><button class="heart-btn"><i class="far fa-heart"></i></button></div>
+                    <time class="time">24/04/2026 22:19</time>
                 </div>
             </article>
 
             <article class="item">
                 <div class="thumb" onclick="openDemo('5qap5aO4i9A')"><img src="https://img.youtube.com/vi/5qap5aO4i9A/mqdefault.jpg"></div>
                 <div class="meta">
-                    <button class="title-btn" onclick="openDemo('5qap5aO4i9A')">O Poder do Preto Absoluto: Design OLED Industrial</button>
-                    <div class="meta-footer"><p class="channel">Design Theory</p><span class="video-date">23/04/2026</span></div>
+                    <button class="title-btn" onclick="openDemo('5qap5aO4i9A')">BEM AMIGOS, ACABOU! HBO MAX BLOQUEIA SENHAS COMPARTILHADAS!</button>
+                    <div class="meta-row"><p class="channel">TecMundo</p><button class="heart-btn"><i class="far fa-heart"></i></button></div>
+                    <time class="time">24/04/2026 22:00</time>
+                </div>
+            </article>
+
+            <article class="item">
+                <div class="thumb" onclick="openDemo('qV70V2v7X0I')"><img src="https://img.youtube.com/vi/qV70V2v7X0I/mqdefault.jpg"></div>
+                <div class="meta">
+                    <button class="title-btn" onclick="openDemo('qV70V2v7X0I')">Samsung Galaxy Buds4 Pro: Análise Definitiva!</button>
+                    <div class="meta-row"><p class="channel">Loop Infinito</p><button class="heart-btn"><i class="far fa-heart"></i></button></div>
+                    <time class="time">24/04/2026 21:43</time>
                 </div>
             </article>
 
             <article class="item">
                 <div class="thumb" onclick="openDemo('ScMzIvxBSi4')"><img src="https://img.youtube.com/vi/ScMzIvxBSi4/mqdefault.jpg"></div>
                 <div class="meta">
-                    <button class="title-btn" onclick="openDemo('ScMzIvxBSi4')">Produtividade Hacker: Como Retomar o Controle do Tempo</button>
-                    <div class="meta-footer"><p class="channel">Focus Systems</p><span class="video-date">20/04/2026</span></div>
-                </div>
-            </article>
-
-            <article class="item">
-                <div class="thumb" onclick="openDemo('eR5VjC_kG9M')"><img src="https://img.youtube.com/vi/eR5VjC_kG9M/mqdefault.jpg"></div>
-                <div class="meta">
-                    <button class="title-btn" onclick="openDemo('eR5VjC_kG9M')">Minimalismo Brutalista na Web Moderna</button>
-                    <div class="meta-footer"><p class="channel">UX Lab</p><span class="video-date">15/04/2026</span></div>
-                </div>
-            </article>
-
-            <article class="item">
-                <div class="thumb" onclick="openDemo('9_o9I8pBfio')"><img src="https://img.youtube.com/vi/9_o9I8pBfio/mqdefault.jpg"></div>
-                <div class="meta">
-                    <button class="title-btn" onclick="openDemo('9_o9I8pBfio')">Configurando seu Workspace para Foco Total</button>
-                    <div class="meta-footer"><p class="channel">Papo de Nerd</p><span class="video-date">10/04/2026</span></div>
-                </div>
-            </article>
-
-            <article class="item">
-                <div class="thumb" onclick="openDemo('8aGhZQkoFbQ')"><img src="https://img.youtube.com/vi/8aGhZQkoFbQ/mqdefault.jpg"></div>
-                <div class="meta">
-                    <button class="title-btn" onclick="openDemo('8aGhZQkoFbQ')">IA e Automação: O Futuro do Trabalho Criativo</button>
-                    <div class="meta-footer"><p class="channel">Tech Trends</p><span class="video-date">01/04/2026</span></div>
-                </div>
-            </article>
-
-            <article class="item">
-                <div class="thumb" onclick="openDemo('L-u6m_wF2O0')"><img src="https://img.youtube.com/vi/L-u6m_wF2O0/mqdefault.jpg"></div>
-                <div class="meta">
-                    <button class="title-btn" onclick="openDemo('L-u6m_wF2O0')">Hardware Brutalista: Máquinas de Alta Performance</button>
-                    <div class="meta-footer"><p class="channel">Industrial Rig</p><span class="video-date">25/03/2026</span></div>
-                </div>
-            </article>
-
-            <article class="item">
-                <div class="thumb" onclick="openDemo('nO2o6D1P274')"><img src="https://img.youtube.com/vi/nO2o6D1P274/mqdefault.jpg"></div>
-                <div class="meta">
-                    <button class="title-btn" onclick="openDemo('nO2o6D1P274')">A Filosofia da Interface de Usuário Focada</button>
-                    <div class="meta-footer"><p class="channel">Design Mind</p><span class="video-date">15/03/2026</span></div>
-                </div>
-            </article>
-
-            <article class="item">
-                <div class="thumb" onclick="openDemo('X7as66-3Wd0')"><img src="https://img.youtube.com/vi/X7as66-3Wd0/mqdefault.jpg"></div>
-                <div class="meta">
-                    <button class="title-btn" onclick="openDemo('X7as66-3Wd0')">O Futuro do RSS e a Curadoria de Conteúdo</button>
-                    <div class="meta-footer"><p class="channel">Open Web</p><span class="video-date">10/03/2026</span></div>
-                </div>
-            </article>
-
-            <article class="item">
-                <div class="thumb" onclick="openDemo('rYEDA3J568g')"><img src="https://img.youtube.com/vi/rYEDA3J568g/mqdefault.jpg"></div>
-                <div class="meta">
-                    <button class="title-btn" onclick="openDemo('rYEDA3J568g')">Papo de Nerd #01: O Início da Jornada</button>
-                    <div class="meta-footer"><p class="channel">Papo de Nerd</p><span class="video-date">20/02/2026</span></div>
+                    <button class="title-btn" onclick="openDemo('ScMzIvxBSi4')">A IA não é mágica e não vai resolver todos os seus problemas</button>
+                    <div class="meta-row"><p class="channel">Léo Andrade</p><button class="heart-btn"><i class="far fa-heart"></i></button></div>
+                    <time class="time">24/04/2026 21:30</time>
                 </div>
             </article>
         </main>
     </div>
 
     <div id="settings-p" class="settings-panel">
-        <h3 style="color:var(--yt-accent); font-size:14px; margin-bottom:20px;">Configurações (Demo)</h3>
-        <p style="font-size:12px; opacity:0.5;">Ajustes Visuais Apenas</p>
+        <h3 style="color:var(--yt-accent); font-size:14px; margin-bottom:20px; text-transform:uppercase;">Configurações</h3>
+        <p style="font-size:12px; opacity:0.5;">Ajustes de Layout Simulados</p>
     </div>
 
     <div id="demo-modal" class="modal">
@@ -206,10 +197,10 @@
     </div>
 
     <script>
-        let prog = 0; setInterval(() => { prog += 1; if(prog > 100) prog = 0; document.getElementById('progress').style.width = prog + '%'; }, 800);
+        let p = 0; setInterval(() => { p += 0.5; if(p > 100) p = 0; document.getElementById('progress').style.width = p + '%'; }, 900);
         function toggleSettings() { document.getElementById('settings-p').classList.toggle('open'); }
         function toggleProfile() { const d = document.getElementById('profile-drop'); d.style.display = d.style.display === 'block' ? 'none' : 'block'; }
-        function openDemo(id) { const modal = document.getElementById('demo-modal'); const iframe = document.getElementById('demo-iframe'); iframe.src = `https://www.youtube.com/embed/${id}?autoplay=1`; modal.style.display = 'flex'; }
+        function openDemo(id) { const m = document.getElementById('demo-modal'); const f = document.getElementById('demo-iframe'); f.src = `https://www.youtube.com/embed/${id}?autoplay=1`; m.style.display = 'flex'; }
         function closeDemo() { document.getElementById('demo-modal').style.display = 'none'; document.getElementById('demo-iframe').src = ''; }
         document.getElementById('theme-btn').addEventListener('click', function() { document.body.classList.toggle('light-mode'); this.textContent = document.body.classList.contains('light-mode') ? '☀️' : '🌙'; });
     </script>
