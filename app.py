@@ -169,6 +169,10 @@ def upload():
 def sobre():
     return render_template("sobre.html")
 
+@app.route("/sobre-2016")
+def sobre_2016():
+    return redirect("/sobre")
+
 @app.route("/help")
 def help_page():
     profile = get_active_profile()
