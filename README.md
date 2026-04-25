@@ -30,13 +30,30 @@ Fundo em **#000000** real, tipografia **Barlow 900** e acentos em **Verde Limão
 
 ---
 
-## 🛠️ Como usar (Vitrine Estática)
+## 🛠️ Como Instalar e Rodar com Docker (Recomendado)
 
-Esta versão no GitHub Pages é uma **demonstração interativa**. Você pode explorar a interface, trocar o tema (Light/Dark) e abrir o player de vídeo para ver como o sistema funciona na prática.
+A versão completa com sincronização RSS e banco de dados está disponível neste repositório e foi construída para rodar perfeitamente em containers.
+> **Nota de Testes:** O ambiente de execução e as imagens Docker são ativamente testados em uma **Máquina Virtual com Windows**.
 
-Para a versão completa com sincronização RSS e banco de dados, o código-fonte está disponível neste repositório para deploy autônomo.
+1. Certifique-se de ter o [Docker](https://www.docker.com/) instalado em sua máquina.
+2. Clone este repositório para o seu ambiente local:
+   ```bash
+   git clone https://github.com/eldolucio/meu-youtube.git
+   cd meu-youtube
+   ```
+3. Acesse a pasta raiz do projeto via terminal e suba os containers:
+   ```bash
+   docker-compose up -d --build
+   ```
+4. O servidor será iniciado em segundo plano. Acesse pelo navegador: `http://localhost:5005`
 
 ---
 
-**Tecnologias**: HTML5 Semântico, CSS Industrial, JavaScript (SPA Mocking).
+## 🌐 Demonstração (Vitrine Estática)
+
+Esta versão no GitHub Pages é uma **demonstração interativa**. Você pode explorar a interface, trocar o tema (Light/Dark) e abrir o player de vídeo para ver como o front-end funciona na prática sem precisar instalar nada.
+
+---
+
+**Tecnologias**: Python (Flask), Docker, SQLite, HTML5 Semântico, CSS Industrial, JavaScript.
 **Desenvolvido para Máxima Produtividade.** 🌑⚙️📈
