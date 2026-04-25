@@ -131,8 +131,11 @@
         <div id="content-area">
             {% block content %}
             {% for v in videos %}
-            <article class="item" data-id="{{ v.link }}">
+            <article class="item {{ 'watched' if v.watched else '' }}" data-id="{{ v.link }}">
                 <div class="thumb" onclick='openPlayer({{ v.video_id | tojson }}, {{ v.title | tojson }}, {{ v.channel | tojson }}, {{ v.thumbnail | tojson }}, {{ v.link | tojson }})'>
+                    {% if v.watched %}
+                    <div class="watched-badge">VISTO</div>
+                    {% endif %}
                     <img src="{{ v.thumbnail }}" alt="thumbnail" loading="lazy">
                 </div>
                 <div class="meta">
@@ -389,6 +392,13 @@
         // Save to history automatically on open
         saveToHistory({ link, title, channel, thumb, time: new Date().toLocaleString() });
         
+        // Mark as watched in backend
+        fetch('/mark-watched', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ video_id: link })
+        });
+
         const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3`;
         playerIframe.src = embedUrl;
         playerModal.classList.add('visible');

@@ -1,6 +1,9 @@
 {% for v in videos %}
-<article class="item" data-id="{{ v.link }}">
+<article class="item {{ 'watched' if v.watched else '' }}" data-id="{{ v.link }}">
     <div class="thumb" onclick="openPlayer({{ v.video_id | tojson }}, {{ v.title | tojson }}, {{ v.channel | tojson }}, {{ v.thumbnail | tojson }}, {{ v.link | tojson }})">
+        {% if v.watched %}
+        <div class="watched-badge">VISTO</div>
+        {% endif %}
         <img src="{{ v.thumbnail }}" alt="thumbnail" loading="lazy">
     </div>
     <div class="meta">

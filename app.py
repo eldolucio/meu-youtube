@@ -2,7 +2,7 @@ import os
 from flask import session
 from antigravity import Antigravity, render_template, redirect, request
 from lib.youtube_parser import get_cached_videos, get_channel_metadata, clear_cache
-from lib.db import get_profiles, save_profile, get_profile_by_id, delete_profile, update_profile
+from lib.db import get_profiles, save_profile, get_profile_by_id, delete_profile, update_profile, mark_as_watched, get_watched_video_ids
 
 antigravity_app = Antigravity()
 app = antigravity_app.app
@@ -71,9 +71,25 @@ def index():
     channels = get_channel_metadata()
     videos = filter_videos_by_profile(videos, profile)
     
+    # Mark watched status
+    watched_ids = get_watched_video_ids(profile["id"])
+    for v in videos:
+        v["watched"] = v["link"] in watched_ids
+
     if channel_filter:
         videos = [v for v in videos if channel_filter in v["channel"].lower()]
     return render_template("index.html", videos=videos, channels=channels, profile=profile, request=request)
+
+@app.route("/mark-watched", methods=["POST"])
+def mark_watched_route():
+    profile = get_active_profile()
+    if not profile: return {"status": "error", "message": "no profile"}, 401
+    
+    video_id = request.json.get("video_id")
+    if video_id:
+        mark_as_watched(profile["id"], video_id)
+        return {"status": "success"}
+    return {"status": "error", "message": "no video_id"}, 400
 
 @app.route("/manage-profiles")
 def manage_profiles():
@@ -115,6 +131,12 @@ def api_videos():
     channel_filter = request.args.get("channel", "").lower()
     videos = get_cached_videos()
     videos = filter_videos_by_profile(videos, profile)
+    
+    if profile:
+        watched_ids = get_watched_video_ids(profile["id"])
+        for v in videos:
+            v["watched"] = v["link"] in watched_ids
+
     if channel_filter:
         videos = [v for v in videos if channel_filter in v["channel"].lower()]
     return render_template("video_list.html", videos=videos)
@@ -125,6 +147,12 @@ def api_refresh():
     profile = get_active_profile()
     videos = get_cached_videos()
     videos = filter_videos_by_profile(videos, profile)
+    
+    if profile:
+        watched_ids = get_watched_video_ids(profile["id"])
+        for v in videos:
+            v["watched"] = v["link"] in watched_ids
+            
     return render_template("video_list.html", videos=videos)
 
 @app.route("/channels")

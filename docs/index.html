@@ -104,6 +104,14 @@
         .status-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 10px; color: #555; margin-top: 15px; }
         .status-dot { width: 6px; height: 6px; background: var(--yt-accent); border-radius: 50%; box-shadow: 0 0 5px var(--yt-accent); }
 
+        .item.watched .thumb img { filter: grayscale(0.8); opacity: 0.4 !important; }
+        .watched-badge {
+            position: absolute; top: 6px; left: 6px; background: #000; color: var(--yt-accent);
+            border: 1px solid var(--yt-accent); padding: 2px 6px; font-family: var(--font-main);
+            font-weight: 900; font-size: 10px; letter-spacing: 1px; z-index: 10; text-transform: uppercase;
+            box-shadow: 2px 2px 0px rgba(0,0,0,0.5);
+        }
+
         .hidden { display: none !important; }
     </style>
 </head>
@@ -212,6 +220,7 @@
             channels: JSON.parse(localStorage.getItem('yt-demo-channels')) || [],
             history: JSON.parse(localStorage.getItem('yt-demo-history')) || [],
             bookmarks: JSON.parse(localStorage.getItem('yt-demo-bookmarks')) || [],
+            watched: JSON.parse(localStorage.getItem('yt-demo-watched')) || {}, // {profileId: [videoIds]}
             currentView: 'home'
         };
 
@@ -229,6 +238,7 @@
             localStorage.setItem('yt-demo-channels', JSON.stringify(state.channels));
             localStorage.setItem('yt-demo-history', JSON.stringify(state.history));
             localStorage.setItem('yt-demo-bookmarks', JSON.stringify(state.bookmarks));
+            localStorage.setItem('yt-demo-watched', JSON.stringify(state.watched));
         }
 
         function init() {
@@ -329,10 +339,12 @@
             container.innerHTML = '';
             videos.forEach(v => {
                 const isBookmarked = state.bookmarks.some(x => x.id === v.id);
+                const isWatched = (state.watched[state.activeProfileId] || []).includes(v.id);
                 const art = document.createElement('article');
-                art.className = 'item';
+                art.className = `item ${isWatched ? 'watched' : ''}`;
                 art.innerHTML = `
                     <div class="thumb" onclick="openPlayer('${v.id}')">
+                        ${isWatched ? '<div class="watched-badge">VISTO</div>' : ''}
                         <img src="https://img.youtube.com/vi/${v.id}/mqdefault.jpg">
                     </div>
                     <div class="meta">
@@ -381,8 +393,15 @@
             if(video && !state.history.some(x => x.id === id)) {
                 state.history.unshift(video);
                 state.history = state.history.slice(0, 20);
-                saveState();
             }
+
+            // Mark as watched
+            if(!state.watched[state.activeProfileId]) state.watched[state.activeProfileId] = [];
+            if(!state.watched[state.activeProfileId].includes(id)) {
+                state.watched[state.activeProfileId].push(id);
+            }
+            saveState();
+            renderFeed();
         }
 
         function closePlayer() {
