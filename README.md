@@ -49,6 +49,36 @@ A versão completa com sincronização RSS e banco de dados está disponível ne
 
 ---
 
+## 💻 Como Instalar Manualmente (Sem Docker)
+
+Se preferir não utilizar o Docker, você pode rodar o projeto diretamente com Python:
+
+1. Certifique-se de ter o [Python 3.8+](https://www.python.org/downloads/) instalado em sua máquina.
+2. Clone este repositório para o seu ambiente local:
+   ```bash
+   git clone https://github.com/eldolucio/meu-youtube.git
+   cd meu-youtube
+   ```
+3. Crie e ative um ambiente virtual (recomendado):
+   ```bash
+   python -m venv venv
+   # No Windows:
+   venv\Scripts\activate
+   # No Mac/Linux:
+   source venv/bin/activate
+   ```
+4. Instale as dependências do projeto:
+   ```bash
+   pip install -r requirements.txt
+   ```
+5. Inicie o servidor:
+   ```bash
+   python app.py
+   ```
+6. O servidor será iniciado. Acesse pelo navegador: `http://localhost:5005`
+
+---
+
 ## 🌐 Demonstração (Vitrine Estática)
 
 Esta versão no GitHub Pages é uma **demonstração interativa**. Você pode explorar a interface, trocar o tema (Light/Dark) e abrir o player de vídeo para ver como o front-end funciona na prática sem precisar instalar nada.
