@@ -4,8 +4,9 @@ from antigravity import Antigravity, render_template, redirect, request
 from lib.youtube_parser import get_cached_videos, get_channel_metadata, clear_cache
 from lib.db import get_profiles, save_profile, get_profile_by_id, delete_profile, update_profile
 
-app = Antigravity()
-app.app.secret_key = "industrial_black_secret_key" # Required for sessions
+antigravity_app = Antigravity()
+app = antigravity_app.app
+app.secret_key = "industrial_black_secret_key" # Required for sessions
 
 # Restricted terms based on profile category
 CATEGORY_FILTERS = {
@@ -15,7 +16,7 @@ CATEGORY_FILTERS = {
 }
 
 # Security Middleware (Add headers to all responses)
-@app.app.after_request
+@app.after_request
 def add_security_headers(response):
     csp = (
         "default-src 'self'; "
@@ -169,13 +170,13 @@ def sobre_2016():
     return render_template("sobre_2016.html")
 
 # Create a handler for Vercel
-app_handler = app.app
+app_handler = app
 
 # Emergency static file server for Vercel
 @app.route('/static/<path:path>')
 def send_static(path):
     from flask import send_from_directory
-    return send_from_directory(app.app.static_folder, path)
+    return send_from_directory(app.static_folder, path)
 
 if __name__ == "__main__":
     print("INICIANDO SERVIDOR EM http://127.0.0.1:5005")
