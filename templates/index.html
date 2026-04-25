@@ -124,6 +124,7 @@
         </div>
 
         <div id="content-area">
+            {% block content %}
             {% for v in videos %}
             <article class="item" data-id="{{ v.link }}">
                 <div class="thumb" onclick='openPlayer({{ v.video_id | tojson }}, {{ v.title | tojson }}, {{ v.channel | tojson }}, {{ v.thumbnail | tojson }}, {{ v.link | tojson }})'>
@@ -147,6 +148,7 @@
             {% else %}
             <p style="text-align:center; margin-top:50px; opacity:0.5;">Nenhum vídeo encontrado ou lista vazia.</p>
             {% endfor %}
+            {% endblock %}
         </div>
     </main>
 </div>
