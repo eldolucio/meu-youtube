@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SHOWCASE | meu youtube industrial</title>
+    <title>meu youtube | INDUSTRIAL SHOWCASE</title>
     <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="icon" type="image/png" href="favicon.png">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
         :root {
             --yt-main-bg: #000000;
@@ -43,7 +43,7 @@
         .my-logo { font-size: 20px; font-weight: 700; letter-spacing: -1px; color: var(--yt-text); display: flex; align-items: center; text-decoration: none; }
         .my-logo span { background-color: var(--yt-logo-red); color: #ffffff; padding: 2px 6px; border-radius: 4px; margin-left: 4px; font-weight: 800; }
         
-        .search-area { flex: 0 1 500px; display: flex; }
+        .search-area { flex: 0 1 500px; display: flex; position: relative; }
         .search-area input { width: 100%; padding: 8px 16px; background: #000; border: 1px solid var(--yt-border); color: #fff; outline: none; }
         .search-area button { background: #222; border: 1px solid var(--yt-border); border-left: none; padding: 0 20px; cursor: pointer; color: #fff; }
 
@@ -54,7 +54,7 @@
         .app-container { display: flex; min-height: calc(100vh - 56px); }
         aside.sidebar { width: 240px; background-color: var(--yt-sidebar-bg); border-right: 1px solid var(--yt-border); height: calc(100vh - 56px); position: sticky; top: 56px; overflow-y: auto; padding-bottom: 50px; }
         
-        .profile-header { padding: 16px; background: #050505; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .profile-header { padding: 16px; background: #050505; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-bottom: 1px solid #111; }
         .profile-name { font-size: 14px; font-weight: 700; text-transform: uppercase; color: #fff; letter-spacing: 1px; }
         .profile-badge { font-size: 8px; background: var(--yt-accent); color: #000; padding: 2px 6px; border-radius: 2px; font-weight: 900; }
 
@@ -63,52 +63,67 @@
             color: var(--yt-text); font-size: 14px; transition: background 0.2s; border-left: 3px solid transparent; 
             background: none; border: none; width: 100%; cursor: pointer; text-align: left;
         }
-        .sidebar-item i, .sidebar-item svg { margin-right: 20px; font-size: 18px; width: 20px; text-align: center; opacity: 0.7; }
+        .sidebar-item i { margin-right: 20px; font-size: 16px; width: 20px; text-align: center; opacity: 0.6; }
         .sidebar-item:hover { background: var(--yt-hover); border-left-color: var(--yt-accent); }
         .sidebar-item.active { background: var(--yt-hover); border-left-color: var(--yt-accent); font-weight: 600; color: var(--yt-accent); }
         
-        .sidebar-title { padding: 24px 24px 8px; font-size: 11px; text-transform: uppercase; color: var(--yt-text-secondary); font-weight: 700; letter-spacing: 1px; border-top: 1px solid #111; margin-top: 10px; }
-        .channel-list { padding-top: 5px; }
+        .sidebar-title { padding: 24px 24px 8px; font-size: 11px; text-transform: uppercase; color: var(--yt-text-secondary); font-weight: 700; letter-spacing: 1px; }
+        .channel-item img { width: 20px; height: 20px; border-radius: 50%; margin-right: 15px; }
 
         main.list { flex: 1; max-width: 1000px; margin: 30px auto; padding: 0 40px; }
-        .view-header { margin-bottom: 30px; font-size: 24px; text-transform: uppercase; letter-spacing: 2px; font-weight: 900; }
+        .view-header { margin-bottom: 20px; font-size: 24px; text-transform: uppercase; letter-spacing: 2px; font-weight: 900; }
         
-        .item { display: flex; padding: 16px 0; border-bottom: 1px solid var(--yt-border); }
+        .item { display: flex; padding: 16px 0; border-bottom: 1px solid var(--yt-border); transition: opacity 0.3s; }
         .thumb { cursor: pointer; flex-shrink: 0; }
-        .thumb img { width: var(--thumb-width); aspect-ratio: 16/9; object-fit: cover; border: 1px solid var(--yt-border); opacity: 0.9; }
-        .meta { margin-left: 16px; flex: 1; position: relative; }
-        .title-btn { display: block; color: var(--yt-text); font-size: 18px; font-weight: 600; text-decoration: none; background: none; border: none; cursor: pointer; text-align: left; line-height: 1.2; width: 90%; }
-        .title-btn:hover { color: var(--yt-accent); }
-        .meta-row { display: flex; justify-content: space-between; align-items: center; margin-top: 5px; }
-        .channel { font-size: 13px; color: var(--yt-text-secondary); }
-        .time { font-size: 11px; color: var(--yt-text-secondary); margin-top: 4px; display: block; }
-        .heart-btn { background: none; border: none; color: var(--yt-text-secondary); cursor: pointer; font-size: 14px; }
-        .heart-btn:hover { color: var(--yt-accent); }
+        .thumb img { width: var(--thumb-width); aspect-ratio: 16/9; object-fit: cover; border: 1px solid var(--yt-border); opacity: 0.9; transition: opacity 0.2s; }
+        .thumb:hover img { opacity: 1; }
+        .meta { margin-left: 20px; flex: 1; }
+        .title { color: var(--yt-text); font-size: 18px; font-weight: 600; cursor: pointer; text-decoration: none; line-height: 1.2; display: block; margin-bottom: 8px; }
+        .title:hover { color: var(--yt-accent); }
+        .channel { font-size: 13px; color: var(--yt-text-secondary); margin-bottom: 4px; }
+        .time { font-size: 11px; color: var(--yt-text-secondary); }
 
-        .settings-panel { position: fixed; top: 56px; right: -320px; width: 300px; height: calc(100vh - 56px); background: #050505; border-left: 1px solid var(--yt-border); z-index: 5000; transition: right 0.3s; padding: 20px; }
+        .settings-panel { position: fixed; top: 0; right: -320px; width: 300px; height: 100%; background: #050505; border-left: 1px solid var(--yt-border); z-index: 5000; transition: right 0.3s; padding: 20px; display: flex; flex-direction: column; }
         .settings-panel.open { right: 0; }
-        
-        .profile-dropdown { display: none; position: absolute; top: 110px; left: 10px; width: 220px; background: #111; border: 1px solid var(--yt-border); z-index: 5000; box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9000; display: none; align-items: center; justify-content: center; }
-        .modal-content { width: 95%; max-width: 960px; aspect-ratio: 16/9; position: relative; border: 1px solid var(--yt-accent); box-shadow: 0 0 30px rgba(200, 241, 53, 0.2); }
+        .settings-group { margin-bottom: 25px; }
+        .group-label { font-size: 10px; font-weight: 800; color: #555; text-transform: uppercase; margin-bottom: 15px; display: block; border-bottom: 1px solid #111; padding-bottom: 5px; }
+
+        .profile-dropdown { display: none; position: absolute; top: 110px; left: 10px; width: 220px; background: #0a0a0a; border: 1px solid var(--yt-border); z-index: 5000; box-shadow: 0 10px 40px rgba(0,0,0,0.9); }
+        .profile-opt { padding: 12px 16px; border-bottom: 1px solid #111; cursor: pointer; transition: background 0.2s; }
+        .profile-opt:hover { background: #1a1a1a; color: var(--yt-accent); }
+
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 9000; display: none; align-items: center; justify-content: center; }
+        .modal-content { width: 95%; max-width: 1000px; aspect-ratio: 16/9; background: #000; border: 1px solid var(--yt-accent); position: relative; }
         .close-modal { position: absolute; top: -50px; right: 0; background: none; border: none; color: #fff; font-size: 40px; cursor: pointer; }
+
+        .import-box { background: #080808; border: 1px dashed #333; padding: 20px; text-align: center; margin-top: 10px; border-radius: 4px; }
+        .import-box:hover { border-color: var(--yt-accent); }
+        .file-input { display: none; }
+        .import-label { cursor: pointer; font-size: 11px; font-weight: 800; color: var(--yt-accent); text-transform: uppercase; }
+
+        .status-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 10px; color: #555; margin-top: 15px; }
+        .status-dot { width: 6px; height: 6px; background: var(--yt-accent); border-radius: 50%; box-shadow: 0 0 5px var(--yt-accent); }
+
+        .hidden { display: none !important; }
     </style>
 </head>
-<body>
+<body class="oled-theme">
 
     <div class="refresh-progress" id="progress"></div>
 
     <header class="yt-header">
-        <a href="#" class="my-logo">meu <span>youtube</span></a>
+        <div style="display:flex; align-items:center; gap:20px;">
+            <a href="#" class="my-logo">meu <span>youtube</span></a>
+            <span style="font-size:9px; background:#111; padding:2px 6px; border-radius:2px; color:#555;">DEMO 100% FUNCIONAL</span>
+        </div>
         <div class="search-area">
-            <input type="text" placeholder="Pesquisar canal na demo...">
-            <button type="button"><i class="fas fa-search"></i></button>
+            <input type="text" id="search-input" placeholder="Pesquisar nos vídeos carregados..." onkeyup="filterVideos()">
+            <button><i class="fas fa-search"></i></button>
         </div>
         <div class="header-actions">
-            <button class="btn-industrial" onclick="alert('Sincronização Simulada')">ATUALIZAR</button>
-            <a href="/sobre" class="btn-industrial" style="border:none; opacity:0.6;">Sobre 2016</a>
-            <button class="action-btn" id="theme-btn" style="background:none; border:none; color:inherit; cursor:pointer;">🌙</button>
-            <button class="action-btn" onclick="toggleSettings()" style="background:none; border:none; color:inherit; cursor:pointer;">⚙️</button>
+            <button class="btn-industrial" onclick="simulateRefresh()">ATUALIZAR</button>
+            <button class="action-btn" id="theme-btn" style="background:none; border:none; color:inherit; cursor:pointer; font-size:18px;">🌙</button>
+            <button class="action-btn" onclick="toggleSettings()" style="background:none; border:none; color:inherit; cursor:pointer; font-size:18px;">⚙️</button>
         </div>
     </header>
 
@@ -116,93 +131,306 @@
         <aside class="sidebar">
             <div class="profile-header" onclick="toggleProfile()">
                 <div style="display:flex; flex-direction:column;">
-                    <span class="profile-name">ELDO LUCIO</span>
-                    <span class="profile-badge">ADULTO</span>
+                    <span class="profile-name" id="current-profile-name">ELDO LUCIO</span>
+                    <span class="profile-badge" id="current-profile-badge">ADULTO</span>
                 </div>
-                <i class="fas fa-user-friends" style="color:#555;"></i>
+                <i class="fas fa-chevron-down" style="font-size:10px; color:#555;"></i>
             </div>
             
             <div id="profile-drop" class="profile-dropdown">
-                <div style="padding:12px; font-size:10px; color:#555; text-transform:uppercase;">Trocar Perfil</div>
-                <div style="padding:12px; color:#fff; cursor:pointer; border-bottom:1px solid #1a1a1a;">Papo de Nerd</div>
-                <div style="padding:12px; color:#fff; cursor:pointer;">Visitante</div>
+                <!-- Perfis serão injetados aqui -->
             </div>
 
-            <nav style="margin-top:10px;">
-                <button class="sidebar-item active"><i class="fas fa-home"></i> Início</button>
-                <button class="sidebar-item"><i class="fas fa-history"></i> Histórico</button>
-                <button class="sidebar-item"><i class="fas fa-folder"></i> Biblioteca</button>
-                <button class="sidebar-item"><i class="fas fa-question-circle"></i> Ajuda</button>
+            <nav style="margin-top:20px;">
+                <button class="sidebar-item active" onclick="showView('home')"><i class="fas fa-home"></i> Início</button>
+                <button class="sidebar-item" onclick="showView('history')"><i class="fas fa-history"></i> Histórico</button>
+                <button class="sidebar-item" onclick="showView('bookmarks')"><i class="fas fa-heart"></i> Salvos</button>
+                <button class="sidebar-item" onclick="location.href='/meu-youtube/sobre'"><i class="fas fa-user-ninja"></i> Manifesto</button>
             </nav>
 
-            <h3 class="sidebar-title">INSCRIÇÕES</h3>
-            <div class="channel-list">
-                <button class="sidebar-item"><img src="https://www.gstatic.com/youtube/img/branding/favicon/favicon_48x48.png" style="width:20px; border-radius:50%; margin-right:20px;"> Ale Mendonça</button>
-                <button class="sidebar-item"><img src="https://www.gstatic.com/youtube/img/branding/favicon/favicon_48x48.png" style="width:20px; border-radius:50%; margin-right:20px;"> Andre Pilli</button>
-                <button class="sidebar-item"><img src="https://www.gstatic.com/youtube/img/branding/favicon/favicon_48x48.png" style="width:20px; border-radius:50%; margin-right:20px;"> Atila Iamarino</button>
-                <button class="sidebar-item"><img src="https://www.gstatic.com/youtube/img/branding/favicon/favicon_48x48.png" style="width:20px; border-radius:50%; margin-right:20px;"> Canaltech</button>
-                <button class="sidebar-item"><img src="https://www.gstatic.com/youtube/img/branding/favicon/favicon_48x48.png" style="width:20px; border-radius:50%; margin-right:20px;"> Cinema com Rapadura</button>
-                <button class="sidebar-item"><img src="https://www.gstatic.com/youtube/img/branding/favicon/favicon_48x48.png" style="width:20px; border-radius:50%; margin-right:20px;"> Papo de Nerd</button>
+            <h3 class="sidebar-title">CANAIS CARREGADOS</h3>
+            <div id="channel-list-container" class="channel-list">
+                <p style="padding:0 24px; font-size:11px; opacity:0.3;">Nenhum canal importado.</p>
+            </div>
+            
+            <div style="padding:24px; position:absolute; bottom:0; width:100%;">
+                <div class="status-pill"><span class="status-dot"></span> <span id="canal-count">0 canais ativos</span></div>
             </div>
         </aside>
 
         <main class="list">
-            <h1 class="view-header">Início</h1>
-
-            <article class="item">
-                <div class="thumb" onclick="openDemo('Vb_Z7U7_t6U')"><img src="https://img.youtube.com/vi/Vb_Z7U7_t6U/mqdefault.jpg"></div>
-                <div class="meta">
-                    <button class="title-btn" onclick="openDemo('Vb_Z7U7_t6U')">DEU A DOIDA NA NILCINHA - Ep. 1772</button>
-                    <div class="meta-row"><p class="channel">Cadê a chave?</p><button class="heart-btn"><i class="far fa-heart"></i></button></div>
-                    <time class="time">24/04/2026 22:19</time>
-                </div>
-            </article>
-
-            <article class="item">
-                <div class="thumb" onclick="openDemo('5qap5aO4i9A')"><img src="https://img.youtube.com/vi/5qap5aO4i9A/mqdefault.jpg"></div>
-                <div class="meta">
-                    <button class="title-btn" onclick="openDemo('5qap5aO4i9A')">BEM AMIGOS, ACABOU! HBO MAX BLOQUEIA SENHAS COMPARTILHADAS!</button>
-                    <div class="meta-row"><p class="channel">TecMundo</p><button class="heart-btn"><i class="far fa-heart"></i></button></div>
-                    <time class="time">24/04/2026 22:00</time>
-                </div>
-            </article>
-
-            <article class="item">
-                <div class="thumb" onclick="openDemo('qV70V2v7X0I')"><img src="https://img.youtube.com/vi/qV70V2v7X0I/mqdefault.jpg"></div>
-                <div class="meta">
-                    <button class="title-btn" onclick="openDemo('qV70V2v7X0I')">Samsung Galaxy Buds4 Pro: Análise Definitiva!</button>
-                    <div class="meta-row"><p class="channel">Loop Infinito</p><button class="heart-btn"><i class="far fa-heart"></i></button></div>
-                    <time class="time">24/04/2026 21:43</time>
-                </div>
-            </article>
-
-            <article class="item">
-                <div class="thumb" onclick="openDemo('ScMzIvxBSi4')"><img src="https://img.youtube.com/vi/ScMzIvxBSi4/mqdefault.jpg"></div>
-                <div class="meta">
-                    <button class="title-btn" onclick="openDemo('ScMzIvxBSi4')">A IA não é mágica e não vai resolver todos os seus problemas</button>
-                    <div class="meta-row"><p class="channel">Léo Andrade</p><button class="heart-btn"><i class="far fa-heart"></i></button></div>
-                    <time class="time">24/04/2026 21:30</time>
-                </div>
-            </article>
+            <h1 class="view-header" id="view-title">Início</h1>
+            <div id="video-feed">
+                <!-- Vídeos serão injetados aqui -->
+            </div>
         </main>
     </div>
 
+    <!-- PAINEL DE CONFIGURAÇÕES -->
     <div id="settings-p" class="settings-panel">
-        <h3 style="color:var(--yt-accent); font-size:14px; margin-bottom:20px; text-transform:uppercase;">Configurações</h3>
-        <p style="font-size:12px; opacity:0.5;">Ajustes de Layout Simulados</p>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+            <h2 style="font-size:14px; text-transform:uppercase; color:var(--yt-accent);">Configurações Demo</h2>
+            <button onclick="toggleSettings()" style="background:none; border:none; color:#fff; font-size:24px; cursor:pointer;">&times;</button>
+        </div>
+        
+        <div class="settings-group">
+            <label class="group-label">Importar Inscritos</label>
+            <div class="import-box">
+                <label for="csv-upload" class="import-label">SELECIONAR SUBSCRIPTIONS.CSV</label>
+                <input type="file" id="csv-upload" class="file-input" accept=".csv" onchange="handleFileUpload(event)">
+                <p style="font-size:9px; color:#555; margin-top:8px;">Importação real via JavaScript</p>
+            </div>
+        </div>
+
+        <div class="settings-group">
+            <label class="group-label">Perfis (Local Storage)</label>
+            <input type="text" id="new-profile-name" placeholder="Nome do Perfil" style="width:100%; padding:8px; background:#111; border:1px solid #222; color:#fff; margin-bottom:10px;">
+            <button class="btn-industrial" style="width:100%;" onclick="addNewProfile()">CRIAR NOVO PERFIL</button>
+        </div>
+
+        <div style="margin-top:auto;">
+            <button class="btn-industrial" style="width:100%; opacity:0.5;" onclick="clearAllData()">RESETAR TODOS OS DADOS</button>
+        </div>
     </div>
 
-    <div id="demo-modal" class="modal">
-        <div class="modal-content"><button class="close-modal" onclick="closeDemo()">×</button><iframe id="demo-iframe" src="" width="100%" height="100%" frameborder="0" allowfullscreen></iframe></div>
+    <!-- PLAYER MODAL -->
+    <div id="player-modal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closePlayer()">&times;</button>
+            <iframe id="player-iframe" src="" frameborder="0" width="100%" height="100%" allow="autoplay; fullscreen" allowfullscreen></iframe>
+        </div>
     </div>
 
     <script>
-        let p = 0; setInterval(() => { p += 0.5; if(p > 100) p = 0; document.getElementById('progress').style.width = p + '%'; }, 900);
+        // MOCK DATABASE & LOGIC
+        let state = {
+            profiles: JSON.parse(localStorage.getItem('yt-demo-profiles')) || [
+                { id: 1, name: 'ELDO LUCIO', badge: 'ADULTO' },
+                { id: 2, name: 'PAPO DE NERD', badge: 'ADULTO' }
+            ],
+            activeProfileId: localStorage.getItem('yt-demo-active-profile') || 1,
+            channels: JSON.parse(localStorage.getItem('yt-demo-channels')) || [],
+            history: JSON.parse(localStorage.getItem('yt-demo-history')) || [],
+            bookmarks: JSON.parse(localStorage.getItem('yt-demo-bookmarks')) || [],
+            currentView: 'home'
+        };
+
+        const MOCK_VIDEOS = [
+            { id: 'qV70V2v7X0I', title: 'MANIFESTO 2026: Retomada da Independência Digital', channel: 'Papo de Nerd', date: '24/04/2026' },
+            { id: '5qap5aO4i9A', title: 'O Poder do OLED no Design Moderno', channel: 'Design Theory', date: '23/04/2026' },
+            { id: 'ScMzIvxBSi4', title: 'A IA não é mágica: Desvendando Mitos', channel: 'Léo Andrade', date: '22/04/2026' },
+            { id: 'Vb_Z7U7_t6U', title: 'DEU A DOIDA NA NILCINHA - Ep. 1772', channel: 'Cadê a chave?', date: '21/04/2026' },
+            { id: '8aGhZQkoFbQ', title: 'Hardware Brutalista e Alta Performance', channel: 'Industrial Rig', date: '20/04/2026' }
+        ];
+
+        function saveState() {
+            localStorage.setItem('yt-demo-profiles', JSON.stringify(state.profiles));
+            localStorage.setItem('yt-demo-active-profile', state.activeProfileId);
+            localStorage.setItem('yt-demo-channels', JSON.stringify(state.channels));
+            localStorage.setItem('yt-demo-history', JSON.stringify(state.history));
+            localStorage.setItem('yt-demo-bookmarks', JSON.stringify(state.bookmarks));
+        }
+
+        function init() {
+            renderProfiles();
+            renderSidebar();
+            renderFeed();
+            updateHeader();
+            initProgressBar();
+        }
+
+        function updateHeader() {
+            const p = state.profiles.find(x => x.id == state.activeProfileId);
+            if(p) {
+                document.getElementById('current-profile-name').textContent = p.name;
+                document.getElementById('current-profile-badge').textContent = p.badge;
+            }
+        }
+
+        function renderProfiles() {
+            const container = document.getElementById('profile-drop');
+            container.innerHTML = '<div style="padding:10px; font-size:9px; color:#444; text-transform:uppercase;">Seus Perfis</div>';
+            state.profiles.forEach(p => {
+                const opt = document.createElement('div');
+                opt.className = 'profile-opt';
+                opt.innerHTML = `${p.name} <span style="font-size:8px; opacity:0.5; margin-left:10px;">${p.badge}</span>`;
+                opt.onclick = () => switchProfile(p.id);
+                container.appendChild(opt);
+            });
+        }
+
+        function switchProfile(id) {
+            state.activeProfileId = id;
+            saveState();
+            location.reload();
+        }
+
+        function addNewProfile() {
+            const name = document.getElementById('new-profile-name').value;
+            if(!name) return;
+            const newP = { id: Date.now(), name: name.toUpperCase(), badge: 'ADULTO' };
+            state.profiles.push(newP);
+            saveState();
+            renderProfiles();
+            document.getElementById('new-profile-name').value = '';
+            alert('Perfil criado!');
+        }
+
+        function renderSidebar() {
+            const container = document.getElementById('channel-list-container');
+            const count = document.getElementById('canal-count');
+            
+            if(state.channels.length === 0) {
+                container.innerHTML = '<p style="padding:0 24px; font-size:11px; opacity:0.3;">Nenhum canal importado.</p>';
+                count.textContent = '0 canais ativos';
+            } else {
+                container.innerHTML = '';
+                state.channels.forEach(ch => {
+                    const item = document.createElement('div');
+                    item.className = 'sidebar-item channel-item';
+                    item.innerHTML = `<img src="https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png"> <span>${ch}</span>`;
+                    item.onclick = () => filterByChannel(ch);
+                    container.appendChild(item);
+                });
+                count.textContent = `${state.channels.length} canais ativos`;
+            }
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if(!file) return;
+            
+            Papa.parse(file, {
+                header: true,
+                complete: function(results) {
+                    const extracted = results.data.map(row => row['Channel Title'] || row['Channel Name']).filter(n => n);
+                    state.channels = [...new Set(extracted)].sort();
+                    saveState();
+                    renderSidebar();
+                    alert(`Sucesso! ${state.channels.length} canais importados para esta demo.`);
+                    toggleSettings();
+                }
+            });
+        }
+
+        function renderFeed() {
+            const container = document.getElementById('video-feed');
+            let videos = [];
+            
+            if(state.currentView === 'home') videos = MOCK_VIDEOS;
+            else if(state.currentView === 'history') videos = state.history;
+            else if(state.currentView === 'bookmarks') videos = state.bookmarks;
+
+            if(videos.length === 0) {
+                container.innerHTML = `<p style="text-align:center; padding:50px; opacity:0.3;">Nenhum conteúdo aqui ainda.</p>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            videos.forEach(v => {
+                const isBookmarked = state.bookmarks.some(x => x.id === v.id);
+                const art = document.createElement('article');
+                art.className = 'item';
+                art.innerHTML = `
+                    <div class="thumb" onclick="openPlayer('${v.id}')">
+                        <img src="https://img.youtube.com/vi/${v.id}/mqdefault.jpg">
+                    </div>
+                    <div class="meta">
+                        <a class="title" onclick="openPlayer('${v.id}')">${v.title}</a>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div>
+                                <p class="channel">${v.channel}</p>
+                                <span class="time">${v.date}</span>
+                            </div>
+                            <button onclick="toggleBookmark('${v.id}')" style="background:none; border:none; cursor:pointer; color:${isBookmarked ? 'var(--yt-accent)' : '#444'}">
+                                <i class="${isBookmarked ? 'fas' : 'far'} fa-heart"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(art);
+            });
+        }
+
+        function showView(view) {
+            state.currentView = view;
+            const titleMap = { home: 'Início', history: 'Histórico', bookmarks: 'Vídeos Salvos' };
+            document.getElementById('view-title').textContent = titleMap[view];
+            
+            document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            
+            renderFeed();
+        }
+
+        function toggleBookmark(id) {
+            const video = MOCK_VIDEOS.find(x => x.id === id) || state.history.find(x => x.id === id);
+            const idx = state.bookmarks.findIndex(x => x.id === id);
+            if(idx > -1) state.bookmarks.splice(idx, 1);
+            else state.bookmarks.push(video);
+            saveState();
+            renderFeed();
+        }
+
+        function openPlayer(id) {
+            document.getElementById('player-iframe').src = `https://www.youtube.com/embed/${id}?autoplay=1`;
+            document.getElementById('player-modal').style.display = 'flex';
+            
+            // Add to history
+            const video = MOCK_VIDEOS.find(x => x.id === id);
+            if(video && !state.history.some(x => x.id === id)) {
+                state.history.unshift(video);
+                state.history = state.history.slice(0, 20);
+                saveState();
+            }
+        }
+
+        function closePlayer() {
+            document.getElementById('player-modal').style.display = 'none';
+            document.getElementById('player-iframe').src = '';
+        }
+
+        function filterVideos() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            document.querySelectorAll('.item').forEach(el => {
+                const text = el.innerText.toLowerCase();
+                el.style.display = text.includes(query) ? 'flex' : 'none';
+            });
+        }
+
+        function toggleProfile() { 
+            const d = document.getElementById('profile-drop'); 
+            d.style.display = d.style.display === 'block' ? 'none' : 'block'; 
+        }
+
         function toggleSettings() { document.getElementById('settings-p').classList.toggle('open'); }
-        function toggleProfile() { const d = document.getElementById('profile-drop'); d.style.display = d.style.display === 'block' ? 'none' : 'block'; }
-        function openDemo(id) { const m = document.getElementById('demo-modal'); const f = document.getElementById('demo-iframe'); f.src = `https://www.youtube.com/embed/${id}?autoplay=1`; m.style.display = 'flex'; }
-        function closeDemo() { document.getElementById('demo-modal').style.display = 'none'; document.getElementById('demo-iframe').src = ''; }
-        document.getElementById('theme-btn').addEventListener('click', function() { document.body.classList.toggle('light-mode'); this.textContent = document.body.classList.contains('light-mode') ? '☀️' : '🌙'; });
+
+        function initProgressBar() {
+            let p = 0;
+            setInterval(() => {
+                p += 0.5;
+                if(p > 100) p = 0;
+                document.getElementById('progress').style.width = p + '%';
+            }, 800);
+        }
+
+        function clearAllData() {
+            if(confirm('Tem certeza? Isso apagará tudo nesta demo.')) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        document.getElementById('theme-btn').onclick = () => {
+            document.body.classList.toggle('light-mode');
+            document.getElementById('theme-btn').textContent = document.body.classList.contains('light-mode') ? '☀️' : '🌙';
+        };
+
+        window.onclick = (e) => {
+            if(!e.target.closest('.profile-header')) document.getElementById('profile-drop').style.display = 'none';
+        }
+
+        init();
     </script>
 </body>
 </html>
