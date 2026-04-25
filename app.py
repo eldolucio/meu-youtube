@@ -222,4 +222,4 @@ if __name__ == "__main__":
     import threading
     # Open browser automatically after a short delay
     threading.Timer(1.5, lambda: webbrowser.open('http://127.0.0.1:5005')).start()
-    app.run(port=5005)
+    app.run(host="0.0.0.0", port=5005)
