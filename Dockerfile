@@ -12,6 +12,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Copia primeiro apenas o requirements para aproveitar o cache de camadas do Docker
 COPY requirements.txt .
 
+# Remove psycopg2-binary from requirements since it's only needed on Vercel
+# and causes segfaults on some ARM64 Linux distributions
+RUN sed -i '/psycopg2/d' requirements.txt
+
 # Instala as dependências do Python
 RUN pip install --no-cache-dir -r requirements.txt
 
