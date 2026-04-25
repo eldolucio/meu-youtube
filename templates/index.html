@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Feed de Subscrições YouTube</title>
     <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}?v=1.0.1">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=2.2.1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -308,6 +308,13 @@
             } else if (target === 'library') {
                 viewTitle.textContent = 'Biblioteca';
                 renderLibrary();
+            } else if (target === 'help') {
+                viewTitle.textContent = 'Guia Industrial';
+                const res = await fetch('/help');
+                const text = await res.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(text, 'text/html');
+                contentArea.innerHTML = doc.getElementById('content-area').innerHTML;
             }
             
             loadingOverlay.style.display = 'none';
