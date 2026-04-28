@@ -1,4 +1,4 @@
-# meu **youtube** 🌑 v2.5.0
+# meu **youtube** 🌑 v2.6.0
 > O seu dock de monitoramento industrial ultra-rápido, livre de distrações e focado em alta performance.
 
 [![Static Showcase (GitHub)](https://img.shields.io/badge/Showcase-GitHub_Pages-lime?style=for-the-badge&logo=github)](https://eldolucio.github.io/meu-youtube/)
@@ -14,7 +14,13 @@ Ele elimina anúncios, shorts e recomendações viciantes, entregando um feed pu
 
 ---
 
-## 🚀 Funcionalidades Principais
+## 🚀 Funcionalidades Principais (v2.6.0 Update)
+
+### 🛠️ Barra de Ações no Player
+Ações centralizadas dentro do modal do vídeo para manter o foco total.
+- **SALVAR NA BIBLIOTECA**: Persistência real em banco de dados (SQLite local ou Vercel Postgres em produção).
+- **BAIXAR PARA PC**: Integração com `yt-dlp` para extrair links diretos de download em alta qualidade.
+- **Status em Tempo Real**: Feedback visual no player para ações concluídas e vídeos já salvos.
 
 ### 🌓 Monitor de Edição (Auto-Refresh Pandora)
 O dashboard conta com um **Auto-Refresh Assíncrono**. Uma linha de progresso finíssima no topo indica a próxima varredura de vídeos. Ele atualiza seu feed em segundo plano sem interromper a navegação.

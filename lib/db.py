@@ -43,6 +43,18 @@ def init_db():
                 UNIQUE(profile_id, video_id)
             )
         """)
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS saved_videos (
+                id SERIAL PRIMARY KEY,
+                profile_id INTEGER REFERENCES profiles(id) ON DELETE CASCADE,
+                video_id VARCHAR(255) NOT NULL,
+                title TEXT,
+                channel TEXT,
+                thumbnail TEXT,
+                saved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE(profile_id, video_id)
+            )
+        """)
     else:
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS profiles (
@@ -58,6 +70,18 @@ def init_db():
                 profile_id INTEGER REFERENCES profiles(id) ON DELETE CASCADE,
                 video_id TEXT NOT NULL,
                 watched_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE(profile_id, video_id)
+            )
+        """)
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS saved_videos (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                profile_id INTEGER REFERENCES profiles(id) ON DELETE CASCADE,
+                video_id TEXT NOT NULL,
+                title TEXT,
+                channel TEXT,
+                thumbnail TEXT,
+                saved_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 UNIQUE(profile_id, video_id)
             )
         """)
@@ -171,6 +195,60 @@ def get_watched_video_ids(profile_id):
     ids = [r[0] for r in rows]
     conn.close()
     return ids
+
+def save_video(profile_id, video_id, title, channel, thumbnail):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = """
+        INSERT INTO saved_videos (profile_id, video_id, title, channel, thumbnail) 
+        VALUES (%s, %s, %s, %s, %s)
+        ON CONFLICT (profile_id, video_id) DO NOTHING
+    """ if IS_VERCEL else """
+        INSERT OR IGNORE INTO saved_videos (profile_id, video_id, title, channel, thumbnail) 
+        VALUES (?, ?, ?, ?, ?)
+    """
+    cursor.execute(query, (profile_id, video_id, title, channel, thumbnail))
+    conn.commit()
+    conn.close()
+    return True
+
+def get_saved_videos(profile_id):
+    conn = get_connection()
+    if IS_VERCEL:
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
+        cursor.execute("SELECT video_id, title, channel, thumbnail, saved_at FROM saved_videos WHERE profile_id = %s ORDER BY saved_at DESC", (profile_id,))
+        rows = cursor.fetchall()
+        videos = []
+        for r in rows:
+            v = dict(r)
+            v["link"] = f"https://www.youtube.com/watch?v={v['video_id']}"
+            v["published_str"] = v["saved_at"].strftime("%d/%m/%Y %H:%M") if hasattr(v["saved_at"], "strftime") else str(v["saved_at"])
+            videos.append(v)
+    else:
+        cursor = conn.cursor()
+        cursor.execute("SELECT video_id, title, channel, thumbnail, saved_at FROM saved_videos WHERE profile_id = ? ORDER BY saved_at DESC", (profile_id,))
+        rows = cursor.fetchall()
+        videos = []
+        for r in rows:
+            videos.append({
+                "video_id": r[0], 
+                "title": r[1], 
+                "channel": r[2], 
+                "thumbnail": r[3],
+                "link": f"https://www.youtube.com/watch?v={r[0]}",
+                "published_str": f"Salvo em {r[4][:16]}" if r[4] else "Salvo"
+            })
+    conn.close()
+    return videos
+
+def is_video_saved(profile_id, video_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = "SELECT 1 FROM saved_videos WHERE profile_id = %s AND video_id = %s" if IS_VERCEL else "SELECT 1 FROM saved_videos WHERE profile_id = ? AND video_id = ?"
+    cursor.execute(query, (profile_id, video_id))
+    exists = cursor.fetchone() is not None
+    conn.close()
+    return exists
 
 # Initialize on import
 try:

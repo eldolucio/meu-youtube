@@ -1,6 +1,6 @@
 import os
 from flask import Flask, render_template as _render_template, request as _request, redirect as _redirect
-
+ 
 class Antigravity:
     def __init__(self):
         # Use absolute paths relative to the project root (one level up from this file)

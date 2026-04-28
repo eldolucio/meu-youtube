@@ -12,7 +12,7 @@
 <div id="refresh-progress" class="refresh-progress"></div>
 <header class="yt-header">
     <div class="logo-area">
-        <a href="/" class="my-logo">meu <span>youtube</span> <small style="font-size: 10px; opacity: 0.3; margin-left: 5px;">v2.2</small></a>
+        <a href="/" class="my-logo">meu <span>youtube</span> <small style="font-size: 10px; opacity: 0.3; margin-left: 5px;">v2.6.0</small></a>
     </div>
     <div class="search-area">
         <form id="search-form" class="filter-form">
@@ -172,6 +172,15 @@
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
             allowfullscreen>
         </iframe>
+        <div class="player-actions">
+            <button id="saveBtn" class="action-btn" onclick="saveCurrentVideo()">
+                <span class="icon">★</span> SALVAR NA BIBLIOTECA
+            </button>
+            <button id="downloadBtn" class="action-btn" onclick="downloadCurrentVideo()">
+                <span class="icon">↓</span> BAIXAR PARA PC
+            </button>
+            <div id="statusMsg" class="status-msg"></div>
+        </div>
     </div>
 </div>
 
@@ -317,7 +326,12 @@
                 renderHistory();
             } else if (target === 'library') {
                 viewTitle.textContent = 'Biblioteca';
-                renderLibrary();
+                const res = await fetch('/library');
+                const text = await res.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(text, 'text/html');
+                contentArea.innerHTML = doc.getElementById('content-area').innerHTML;
+                applyFilters();
             } else if (target === 'help') {
                 viewTitle.textContent = 'Guia Industrial';
                 const res = await fetch('/help');
@@ -384,11 +398,16 @@
     }
 
     // Player Logic
-    window.openPlayer = (videoId, title, channel, thumb, link) => {
+    let currentVideoData = null;
+
+    window.openPlayer = async (videoId, title, channel, thumb, link) => {
         if (!videoId) {
             window.open(link, '_blank');
             return;
         }
+        
+        currentVideoData = { videoId, title, channel, thumb, link };
+        
         // Save to history automatically on open
         saveToHistory({ link, title, channel, thumb, time: new Date().toLocaleString() });
         
@@ -399,16 +418,68 @@
             body: JSON.stringify({ video_id: link })
         });
 
+        // Check if video is already saved
+        const saveBtn = document.getElementById('saveBtn');
+        saveBtn.classList.remove('active');
+        saveBtn.innerHTML = '<span class="icon">★</span> SALVAR NA BIBLIOTECA';
+        
+        try {
+            const checkRes = await fetch(`/api/check-saved/${videoId}`);
+            const checkData = await checkRes.json();
+            if (checkData.saved) {
+                saveBtn.classList.add('active');
+                saveBtn.innerHTML = 'SALVO';
+            }
+        } catch(e) { console.error(e); }
+
+        document.getElementById('statusMsg').textContent = '';
+
         const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3`;
         playerIframe.src = embedUrl;
         playerModal.classList.add('visible');
         body.style.overflow = 'hidden';
     };
 
+    window.saveCurrentVideo = async () => {
+        if (!currentVideoData) return;
+        
+        const saveBtn = document.getElementById('saveBtn');
+        const statusMsg = document.getElementById('statusMsg');
+        
+        try {
+            const res = await fetch('/save-video', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    video_id: currentVideoData.videoId,
+                    title: currentVideoData.title,
+                    channel: currentVideoData.channel,
+                    thumbnail: currentVideoData.thumb
+                })
+            });
+            
+            if (res.ok) {
+                saveBtn.classList.add('active');
+                saveBtn.innerHTML = 'SALVO';
+                statusMsg.textContent = 'VÍDEO SALVO NA BIBLIOTECA';
+            }
+        } catch (e) {
+            statusMsg.textContent = 'ERRO AO SALVAR';
+        }
+    };
+
+    window.downloadCurrentVideo = () => {
+        if (!currentVideoData) return;
+        const statusMsg = document.getElementById('statusMsg');
+        statusMsg.textContent = 'Iniciando download...';
+        window.location.href = `/download/${currentVideoData.videoId}`;
+    };
+
     const closePlayer = () => {
         playerModal.classList.remove('visible');
         playerIframe.src = '';
         body.style.overflow = 'auto';
+        currentVideoData = null;
     };
 
     closePlayerBtn.addEventListener('click', closePlayer);

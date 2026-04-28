@@ -2,7 +2,8 @@ import os
 from flask import session
 from antigravity import Antigravity, render_template, redirect, request
 from lib.youtube_parser import get_cached_videos, get_channel_metadata, clear_cache
-from lib.db import get_profiles, save_profile, get_profile_by_id, delete_profile, update_profile, mark_as_watched, get_watched_video_ids
+from lib.db import get_profiles, save_profile, get_profile_by_id, delete_profile, update_profile, mark_as_watched, get_watched_video_ids, save_video, get_saved_videos, is_video_saved
+import yt_dlp
 
 antigravity_app = Antigravity()
 app = antigravity_app.app
@@ -168,10 +169,50 @@ def history_page():
     return render_template("index.html", videos=[], channels=channels, profile=profile, request=request)
 
 @app.route("/library")
+@app.route("/salvos")
 def library_page():
     profile = get_active_profile()
     channels = get_channel_metadata()
-    return render_template("index.html", videos=[], channels=channels, profile=profile, request=request)
+    saved_videos = get_saved_videos(profile["id"]) if profile else []
+    return render_template("index.html", videos=saved_videos, channels=channels, profile=profile, request=request)
+
+@app.route("/save-video", methods=["POST"])
+def save_video_route():
+    profile = get_active_profile()
+    if not profile: return {"status": "error", "message": "no profile"}, 401
+    
+    data = request.json
+    video_id = data.get("video_id")
+    title = data.get("title")
+    channel = data.get("channel")
+    thumbnail = data.get("thumbnail")
+    
+    if video_id:
+        save_video(profile["id"], video_id, title, channel, thumbnail)
+        return {"status": "success"}
+    return {"status": "error", "message": "no video_id"}, 400
+
+@app.route("/api/check-saved/<video_id>")
+def check_saved(video_id):
+    profile = get_active_profile()
+    if not profile: return {"saved": False}
+    return {"saved": is_video_saved(profile["id"], video_id)}
+
+@app.route("/download/<video_id>")
+def download_video(video_id):
+    # This is a basic implementation. In production (Vercel), this might have issues with timeouts.
+    # For the prompt's purpose, we'll implement the logic as requested.
+    try:
+        # Just to show we are "starting", though the response comes after.
+        # Real download to user's PC usually requires a direct link or streaming.
+        # We'll use yt-dlp to get the best URL and redirect, or just simulate for now if on Vercel.
+        ydl_opts = {'format': 'best'}
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(f"https://www.youtube.com/watch?v={video_id}", download=False)
+            download_url = info.get('url')
+            return redirect(download_url)
+    except Exception as e:
+        return {"status": "error", "message": str(e)}, 500
 
 @app.route("/refresh", methods=["POST"])
 def refresh():
