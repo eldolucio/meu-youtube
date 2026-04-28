@@ -8,9 +8,9 @@
 
 > [!IMPORTANT]
 > ### ⚡ NOVIDADES DA VERSÃO 2.6.0
-> - **TOOLBAR NO PLAYER**: Ações de salvar e baixar centralizadas dentro do modal de vídeo.
-> - **BIBLIOTECA PERSISTENTE**: Integração total com Banco de Dados (SQLite/Postgres).
-> - **DOWNLOAD INDUSTRIAL**: Extração de links de download em alta performance via `yt-dlp`.
+> - **CONTROLE TOTAL NO PLAYER**: Salve ou baixe vídeos sem precisar sair da tela ou interromper o que está assistindo.
+> - **SUA BIBLIOTECA, SEMPRE SALVA**: Guarde seus vídeos favoritos de forma permanente para acessar quando quiser.
+> - **BAIXE PARA O PC NUM CLIQUE**: Transforme qualquer vídeo em arquivo para assistir offline ou usar em suas edições.
 
 ## ⚙️ O que é este projeto?
 
@@ -22,11 +22,11 @@ Ele elimina anúncios, shorts e recomendações viciantes, entregando um feed pu
 
 ## 🚀 Funcionalidades Principais (v2.6.0 Update)
 
-### 🛠️ Barra de Ações no Player
-Ações centralizadas dentro do modal do vídeo para manter o foco total.
-- **SALVAR NA BIBLIOTECA**: Persistência real em banco de dados (SQLite local ou Vercel Postgres em produção).
-- **BAIXAR PARA PC**: Integração com `yt-dlp` para extrair links diretos de download em alta qualidade.
-- **Status em Tempo Real**: Feedback visual no player para ações concluídas e vídeos já salvos.
+### 🛠️ Controle Total no Player
+Ações rápidas centralizadas dentro do vídeo para manter seu foco.
+- **Salvar na Biblioteca**: Guarde referências importantes com um clique.
+- **Baixar para o PC**: Tenha o arquivo em mãos para assistir offline ou editar.
+- **Status Inteligente**: O player avisa se o vídeo já foi salvo, evitando duplicatas.
 
 ### 🌓 Monitor de Edição (Auto-Refresh Pandora)
 O dashboard conta com um **Auto-Refresh Assíncrono**. Uma linha de progresso finíssima no topo indica a próxima varredura de vídeos. Ele atualiza seu feed em segundo plano sem interromper a navegação.
