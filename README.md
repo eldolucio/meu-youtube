@@ -6,6 +6,12 @@
 
 ![Preview do Dashboard](screenshot.png)
 
+> [!IMPORTANT]
+> ### ⚡ NOVIDADES DA VERSÃO 2.6.0
+> - **TOOLBAR NO PLAYER**: Ações de salvar e baixar centralizadas dentro do modal de vídeo.
+> - **BIBLIOTECA PERSISTENTE**: Integração total com Banco de Dados (SQLite/Postgres).
+> - **DOWNLOAD INDUSTRIAL**: Extração de links de download em alta performance via `yt-dlp`.
+
 ## ⚙️ O que é este projeto?
 
 O **meu-youtube** não é apenas mais um leitor de vídeos; é um **Monitor Tecnológico Industrial** feito para profissionais que precisam de referências sem o ruído do algoritmo do YouTube. 
