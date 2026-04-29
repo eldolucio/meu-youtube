@@ -98,7 +98,10 @@ cd ~ ; sudo rm -rf venv meu-youtube ; sudo apt update ; sudo apt install -y git 
 
 Se você **já tem o repositório clonado e o Python instalado**, abra o terminal na pasta do projeto e rode **um único comando**:
 
-**No Windows (CMD):**
+**No Windows (Modo Fácil):**
+Basta clicar com o botão direito no arquivo `start.ps1` e selecionar "Executar com o PowerShell". O script configurará tudo e abrirá o navegador automaticamente.
+
+**No Windows (Manual - CMD):**
 ```cmd
 python -m venv venv && .\venv\Scripts\python.exe -m pip install -r requirements.txt && .\venv\Scripts\python.exe app.py
 ```
