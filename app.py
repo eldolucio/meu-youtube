@@ -3,7 +3,6 @@ from flask import session
 from antigravity import Antigravity, render_template, redirect, request
 from lib.youtube_parser import get_cached_videos, get_channel_metadata, clear_cache
 from lib.db import get_profiles, save_profile, get_profile_by_id, delete_profile, update_profile, mark_as_watched, get_watched_video_ids, save_video, get_saved_videos, is_video_saved
-import yt_dlp
 
 antigravity_app = Antigravity()
 app = antigravity_app.app
@@ -200,32 +199,44 @@ def check_saved(video_id):
 
 @app.route("/download/<video_id>")
 def download_video(video_id):
-    # This is a basic implementation. In production (Vercel), this might have issues with timeouts.
-    # For the prompt's purpose, we'll implement the logic as requested.
+    """
+    Usa a API do Cobalt (cobalt.tools) para obter o link direto de download.
+    Funciona no Vercel sem precisar de cookies ou autenticação.
+    """
+    import requests as req
     try:
-        # Just to show we are "starting", though the response comes after.
-        # Real download to user's PC usually requires a direct link or streaming.
-        # We'll use yt-dlp to get the best URL and redirect, or just simulate for now if on Vercel.
-        # Melhorando as opções para evitar detecção de bot (comum no Vercel)
-        ydl_opts = {
-            'format': 'best',
-            'nocheckcertificate': True,
-            'quiet': True,
-            'no_warnings': True,
-            'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            'extractor_args': {
-                'youtube': {
-                    'player_client': ['web', 'mweb', 'ios'],
-                    'skip': ['hls', 'dash']
-                }
-            }
-        }
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(f"https://www.youtube.com/watch?v={video_id}", download=False)
-            download_url = info.get('url')
-            return redirect(download_url)
+        video_url = f"https://www.youtube.com/watch?v={video_id}"
+        
+        # Tenta obter o link via Cobalt API
+        cobalt_response = req.post(
+            "https://api.cobalt.tools/",
+            json={"url": video_url, "videoQuality": "1080"},
+            headers={
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            timeout=15
+        )
+        
+        if cobalt_response.ok:
+            data = cobalt_response.json()
+            status = data.get("status")
+            
+            # Status 'redirect' ou 'stream' retorna URL direta
+            if status in ("redirect", "stream", "tunnel"):
+                return redirect(data.get("url"))
+            
+            # Status 'picker' retorna lista de opções (para vídeos com múltiplos streams)
+            elif status == "picker":
+                first = data.get("picker", [{}])[0]
+                return redirect(first.get("url", video_url))
+        
+        # Fallback: redireciona para o YouTube diretamente
+        return redirect(f"https://www.youtube.com/watch?v={video_id}")
+    
     except Exception as e:
-        return {"status": "error", "message": str(e)}, 500
+        # Fallback seguro: abre o vídeo no YouTube
+        return redirect(f"https://www.youtube.com/watch?v={video_id}")
 
 @app.route("/refresh", methods=["POST"])
 def refresh():
