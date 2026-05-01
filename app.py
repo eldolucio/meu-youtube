@@ -25,7 +25,7 @@ def add_security_headers(response):
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://www.gstatic.com; "
         "font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; "
         "img-src 'self' data: https://*.youtube.com https://*.ytimg.com https://*.ggpht.com https://www.gstatic.com; "
-        "frame-src https://www.youtube-nocookie.com; "
+        "frame-src https://www.youtube-nocookie.com https://www.youtube.com; "
         "connect-src 'self';"
     )
     response.headers['Content-Security-Policy'] = csp
